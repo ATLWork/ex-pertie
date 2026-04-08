@@ -25,7 +25,15 @@
       "Bash(task version:*)",
       "Bash(mkdir -p .task)",
       "Bash(touch .task/pending.data .task/completed.data .task/undo.data)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(python3 -m venv venv)",
+      "Bash(source venv/bin/activate)",
+      "Bash(pip install:*)",
+      "Bash(cp .env.example .env)",
+      "Bash(python -c \"from app.main import app; print\\(''Import successful!''\\)\")",
+      "Bash(timeout 10 uvicorn app.main:app --host 127.0.0.1 --port 8000)",
+      "Bash(python -m pytest tests/ -v)",
+      "Bash(python -m pytest tests/ -v --tb=short)"
     ]
   }
 }

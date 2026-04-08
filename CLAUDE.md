@@ -34,3 +34,8 @@ technical doc: doc/technical-design.md
 ## data model reference
 
 see reference folder
+
+
+## 开发分工  
+
+见 docs/backend-tasks.md
