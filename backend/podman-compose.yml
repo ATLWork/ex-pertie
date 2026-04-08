@@ -1,0 +1,99 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: expertie-app
+    restart: unless-stopped
+    ports:
+      - "${HOST_PORT:-8000}:8000"
+    environment:
+      - APP_ENV=production
+      - DEBUG=false
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_HOURS=${ACCESS_TOKEN_EXPIRE_HOURS}
+      - REFRESH_TOKEN_EXPIRE_DAYS=${REFRESH_TOKEN_EXPIRE_DAYS}
+      - CORS_ORIGINS=${CORS_ORIGINS}
+      - CORS_ALLOW_CREDENTIALS=true
+      - CORS_ALLOW_METHODS=["*"]
+      - CORS_ALLOW_HEADERS=["*"]
+      - TENCENT_SECRET_ID=${TENCENT_SECRET_ID}
+      - TENCENT_SECRET_KEY=${TENCENT_SECRET_KEY}
+      - TENCENT_REGION=${TENCENT_REGION}
+      - AI_API_KEY=${AI_API_KEY}
+      - AI_API_BASE_URL=${AI_API_BASE_URL}
+      - AI_MODEL=${AI_MODEL}
+      - TRANSLATION_CACHE_TTL=${TRANSLATION_CACHE_TTL}
+      - TRANSLATION_MAX_RETRIES=${TRANSLATION_MAX_RETRIES}
+      - TRANSLATION_TIMEOUT=${TRANSLATION_TIMEOUT}
+      - LOG_LEVEL=${LOG_LEVEL}
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+    networks:
+      - expertie-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  postgres:
+    image: docker.io/postgres:16-alpine
+    container_name: expertie-postgres
+    restart: unless-stopped
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - expertie-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    image: docker.io/redis:7-alpine
+    container_name: expertie-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: redis-server --requirepass ${REDIS_PASSWORD:-} --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - expertie-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  expertie-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local

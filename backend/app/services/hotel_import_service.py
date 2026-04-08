@@ -24,7 +24,7 @@ from app.models.hotel import Hotel
 from app.models.import_history import ImportHistory, ImportStatus, ImportType
 from app.parsers.excel_parser import HotelExcelParser
 from app.schemas.hotel import HotelCreate
-from app.services.hotel_service import HotelService, hotel_service
+from app.services.hotel_service import HotelService, hotel_service as global_hotel_service
 from app.validators.hotel_validator import HotelValidator, ValidationResult
 
 
@@ -53,7 +53,7 @@ class HotelImportService:
             hotel_service: Optional HotelService instance. Defaults to global instance.
             hotel_validator: Optional HotelValidator instance. Defaults to new instance.
         """
-        self.hotel_service = hotel_service or hotel_service
+        self.hotel_service = hotel_service if hotel_service is not None else global_hotel_service
         self.validator = hotel_validator or HotelValidator()
 
     def _compute_file_hash(self, content: bytes) -> str:
@@ -144,10 +144,19 @@ class HotelImportService:
         Returns:
             List of row dictionaries
         """
+        import tempfile
+
         # Write to temp file for HotelExcelParser
-        with BytesIO(content) as bio:
-            parser = HotelExcelParser(file_path=bio)
+        with tempfile.NamedTemporaryFile(suffix=".xlsx", delete=False) as tmp:
+            tmp.write(content)
+            tmp_path = tmp.name
+
+        try:
+            parser = HotelExcelParser(file_path=tmp_path)
             result = parser.parse()
+        finally:
+            import os
+            os.unlink(tmp_path)
 
         if not result.success:
             error_messages = [e.message for e in result.errors]

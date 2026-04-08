@@ -16,6 +16,15 @@ from app.schemas.auth import (
     UserResponse,
     UserUpdate,
 )
+from app.schemas.import_history import (
+    ImportErrorDetail,
+    ImportErrorsResponse,
+    ImportHistoryBriefResponse,
+    ImportHistoryListResponse,
+    ImportHistoryResponse,
+    ImportResultResponse,
+    ImportResultRow,
+)
 from app.schemas.response import (
     ApiResponse,
     ErrorResponse,
@@ -52,4 +61,12 @@ __all__ = [
     "RoleCreate",
     "RoleUpdate",
     "RoleResponse",
+    # Import history schemas
+    "ImportHistoryResponse",
+    "ImportHistoryBriefResponse",
+    "ImportErrorsResponse",
+    "ImportErrorDetail",
+    "ImportResultResponse",
+    "ImportResultRow",
+    "ImportHistoryListResponse",
 ]

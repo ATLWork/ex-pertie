@@ -33,7 +33,22 @@
       "Bash(python -c \"from app.main import app; print\\(''Import successful!''\\)\")",
       "Bash(timeout 10 uvicorn app.main:app --host 127.0.0.1 --port 8000)",
       "Bash(python -m pytest tests/ -v)",
-      "Bash(python -m pytest tests/ -v --tb=short)"
+      "Bash(python -m pytest tests/ -v --tb=short)",
+      "Bash(task list:*)",
+      "Bash(task:*)",
+      "Bash(python -c \"from app.models import Hotel, Room, RoomExtension, HotelBrand, HotelStatus; print\\(''Models imported successfully!''\\)\")",
+      "Bash(python -c \":*)",
+      "Bash(python -m pytest tests/test_hotel_models.py -v --tb=short)",
+      "Bash(cat:*)",
+      "Bash(chmod +x /tmp/init_all_tasks.sh)",
+      "Bash(/tmp/init_all_tasks.sh)",
+      "Bash(python -c \"from app.services.hotel_search_service import HotelSearchService; print\\(''OK''\\)\")",
+      "Bash(python -c \"from app.services.hotel_service import HotelService; from app.services.room_service import RoomService; from app.validators.hotel_validator import HotelValidator; from app.validators.room_validator import RoomValidator; print\\(''All OK''\\)\")",
+      "Bash(python -c \"from app.api.v1.hotels import router; print\\(''OK''\\)\")",
+      "Bash(python -c \"from app.services.hotel_import_service import HotelImportService; print\\(''OK''\\)\")",
+      "Bash(python -c \"from app.services.hotel_export_service import HotelExportService; print\\(''OK''\\)\")",
+      "Bash(python -c \"from app.tasks.export_tasks import process_hotel_export; print\\(''OK''\\)\")",
+      "Bash(python -c \"from app.api.v1.exports import router; print\\(''OK''\\)\")"
     ]
   }
 }
