@@ -16,6 +16,22 @@ from app.models.translation import (
     GlossaryCategory,
     TranslationType,
 )
+from app.models.hotel import (
+    Hotel,
+    HotelBrand,
+    HotelStatus,
+    Room,
+)
+from app.models.room import RoomExtension
+from app.models.import_history import ImportHistory, ImportType, ImportStatus
+from app.models.export_history import ExportHistory, ExportType, ExportFormat, ExportStatus
+from app.models.expedia_template import (
+    ExpediaTemplate,
+    FieldMapping,
+    TemplateType,
+    TemplateStatus,
+    FieldMappingType,
+)
 
 __all__ = [
     "BaseModel",
@@ -32,4 +48,21 @@ __all__ = [
     "ReferenceSource",
     "GlossaryCategory",
     "TranslationType",
+    "Hotel",
+    "HotelBrand",
+    "HotelStatus",
+    "Room",
+    "RoomExtension",
+    "ImportHistory",
+    "ImportType",
+    "ImportStatus",
+    "ExportHistory",
+    "ExportType",
+    "ExportFormat",
+    "ExportStatus",
+    "ExpediaTemplate",
+    "FieldMapping",
+    "TemplateType",
+    "TemplateStatus",
+    "FieldMappingType",
 ]
