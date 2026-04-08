@@ -20,8 +20,7 @@ figma: https://www.figma.com/design/1mGr7uxovueykuLHZk8p5M/Ex-pertie-%E2%80%94-E
 
 ## Project Management
 
-linear：https://linear.app/jarvisdesign/project/ex-pertie-68dcde6105ab
-
+项目管理使用当前目录的 taskwarrior
 
 ## issue management
 

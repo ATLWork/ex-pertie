@@ -13,7 +13,19 @@
       "mcp__claude_ai_Figma__whoami",
       "mcp__claude_ai_Figma__create_new_file",
       "mcp__claude_ai_Figma__get_screenshot",
-      "mcp__claude_ai_Linear__save_issue"
+      "mcp__claude_ai_Linear__save_issue",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git -C /Users/luyun/Documents/power-on/ex-pertie log --oneline -5)",
+      "mcp__claude_ai_Linear__list_teams",
+      "mcp__claude_ai_Linear__research",
+      "Bash(command -v linear)",
+      "Bash(npm list:*)",
+      "mcp__claude_ai_Linear__list_projects",
+      "Bash(task version:*)",
+      "Bash(mkdir -p .task)",
+      "Bash(touch .task/pending.data .task/completed.data .task/undo.data)",
+      "Bash(git push:*)"
     ]
   }
 }
