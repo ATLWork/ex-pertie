@@ -1,0 +1,9 @@
+# Taskwarrior local configuration
+# Data location
+data.location=.task
+
+# Default command
+default.command=next
+
+# Date format
+dateformat=Y-M-D
