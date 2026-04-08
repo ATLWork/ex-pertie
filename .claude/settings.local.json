@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(install-mcp)",
+      "Bash(npx --version)",
+      "Bash(HTTPS_PROXY=http://127.0.0.1:7890 npx -y @figma/mcp --help)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(k\\) for k in d.get\\(''''mcpServers'''',{}\\).keys\\(\\)]\")",
+      "Bash(claude mcp:*)",
+      "mcp__claude_ai_Linear__list_issues",
+      "mcp__claude_ai_Figma__get_metadata",
+      "mcp__claude_ai_Figma__get_design_context",
+      "mcp__claude_ai_Figma__use_figma",
+      "mcp__claude_ai_Figma__whoami",
+      "mcp__claude_ai_Figma__create_new_file",
+      "mcp__claude_ai_Figma__get_screenshot",
+      "mcp__claude_ai_Linear__save_issue"
+    ]
+  }
+}
