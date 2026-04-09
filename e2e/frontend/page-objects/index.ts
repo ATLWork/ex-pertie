@@ -1,0 +1,9 @@
+export { LoginPage } from './LoginPage';
+export { RegisterPage } from './RegisterPage';
+export { DashboardPage } from './DashboardPage';
+export { HotelsPage } from './HotelsPage';
+export { ImportPage } from './ImportPage';
+export { TranslatePage } from './TranslatePage';
+export { TerminologyPage } from './TerminologyPage';
+export { RulesPage } from './RulesPage';
+export { ExportPage } from './ExportPage';
