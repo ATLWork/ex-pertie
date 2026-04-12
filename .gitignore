@@ -1,0 +1,3 @@
+# Taskwarrior
+.task/*.sqlite3-wal
+.task/*.sqlite3-shm
