@@ -1,0 +1,19 @@
+{
+  "name": "expedia-e2e-tests",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test:all": "cucumber-js features/**/*.feature --require step_definitions/**/*.js --require support/hooks.js --format progress-bar",
+    "test:p0": "cucumber-js features/**/*.feature --tags '@P0' --require step_definitions/**/*.js --require support/hooks.js",
+    "test:p1": "cucumber-js features/**/*.feature --tags '@P1' --require step_definitions/**/*.js --require support/hooks.js",
+    "test:report": "allure generate allure-results --clean && allure open"
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^10.3.1",
+    "@playwright/test": "^1.41.2",
+    "allure-cucumberjs": "^2.12.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0"
+  }
+}
