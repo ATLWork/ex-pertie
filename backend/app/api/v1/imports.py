@@ -6,11 +6,14 @@ Handles hotel and room data import from Excel/CSV files.
 
 import json
 from datetime import datetime
+from io import BytesIO
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, File, Path, Query, Request, UploadFile
+from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
+import openpyxl
 from app.core.database import get_db
 from app.core.deps import get_current_user
 from app.middleware.exception import BadRequestError, NotFoundError
@@ -25,9 +28,11 @@ from app.schemas.import_history import (
     ImportResultResponse,
     ImportResultRow,
 )
+from app.schemas.import_progress import ImportProgressResponse
 from app.schemas.response import ApiResponse, PagedData, PagedResponse
 from app.services.hotel_import_service import get_hotel_import_service
 from app.services.room_import_service import get_room_import_service
+from app.services.import_progress_service import get_import_progress_service
 
 router = APIRouter()
 
@@ -357,4 +362,121 @@ async def get_import_errors(
             total_errors=len(errors),
             errors=errors,
         ),
+    )
+
+
+@router.get(
+    "/{import_id}/progress",
+    response_model=ApiResponse[ImportProgressResponse],
+    summary="Get import progress",
+    description="Get real-time progress for an import operation.",
+)
+async def get_import_progress(
+    import_id: str = Path(..., description="Import history ID"),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Get real-time progress for an import operation.
+
+    - **import_id**: Import history ID
+    """
+    progress_service = get_import_progress_service()
+    progress = await progress_service.get_progress(import_id)
+
+    if not progress:
+        raise NotFoundError(
+            message="Import progress not found",
+            details={"import_id": import_id},
+        )
+
+    return ApiResponse(
+        code=200,
+        message="success",
+        data=ImportProgressResponse(**progress.to_dict()),
+    )
+
+
+@router.get(
+    "/template/{import_type}",
+    summary="Download import template",
+    description="Download Excel template for hotel or room import.",
+)
+async def download_template(
+    import_type: str = Path(..., description="Import type: 'hotels' or 'rooms'"),
+):
+    """
+    Download import template Excel file.
+
+    - **import_type**: 'hotels' for hotel template, 'rooms' for room template
+    """
+    if import_type not in ('hotels', 'rooms'):
+        raise BadRequestError(
+            message="Invalid import type. Must be 'hotels' or 'rooms'",
+        )
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = import_type.capitalize()
+
+    if import_type == 'hotels':
+        headers = [
+            'name_cn', 'name_en', 'brand', 'status', 'country_code', 'province', 'city',
+            'district', 'address_cn', 'address_en', 'postal_code', 'phone', 'email',
+            'latitude', 'longitude', 'check_in_time', 'check_out_time',
+            'cancellation_policy', 'prepayment_policy', 'kid_policy', 'pet_policy',
+            'services', 'facilities', 'description',
+        ]
+        # Add sample row
+        sample_data = [
+            '北京亚朵酒店', 'Atour Beijing', 'atour', 'draft', 'CN', '北京市',
+            '北京', '朝阳区', '朝阳区某路123号', '123 Some Road, Chaoyang District', '100000',
+            '+86-10-12345678', 'info@atour.com', 39.9042, 116.4074,
+            '14:00', '12:00',
+            '免费取消', '无需预付', '允许儿童入住', '不允许携带宠物',
+            '免费WiFi,停车场', '健身房,会议室', '亚朵酒店为您提供舒适的住宿体验',
+        ]
+    else:
+        headers = [
+            'hotel_id', 'room_type_code', 'name_cn', 'name_en', 'description_cn',
+            'bed_type', 'max_occupancy', 'standard_occupancy', 'room_size',
+            'floor_range', 'total_rooms', 'amenities', 'smoking_policy',
+        ]
+        # Add sample row
+        sample_data = [
+            '{hotel_id}', 'STD-KING', '标准大床房', 'Standard King Room',
+            '温馨舒适的标准大床房', 'King', 2, 2, 30.5,
+            '3-10', 20, '免费WiFi,空调,电视', '禁止吸烟',
+        ]
+
+    ws.append(headers)
+    ws.append(sample_data)
+
+    # Format header row
+    for cell in ws[1]:
+        cell.font = openpyxl.styles.Font(bold=True)
+        cell.fill = openpyxl.styles.PatternFill(start_color="CCCCCC", end_color="CCCCCC", fill_type="solid")
+
+    # Auto-adjust column widths
+    for column in ws.columns:
+        max_length = 0
+        column_letter = column[0].column_letter
+        for cell in column:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(str(cell.value))
+            except:
+                pass
+        adjusted_width = min(max_length + 2, 50)
+        ws.column_dimensions[column_letter].width = adjusted_width
+
+    # Save to bytes
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    filename = f"import_{import_type}_template.xlsx"
+    return StreamingResponse(
+        output,
+        media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers={'Content-Disposition': f'attachment; filename="{filename}"'},
     )

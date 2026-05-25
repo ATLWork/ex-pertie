@@ -1,0 +1,11 @@
+Error: The uri (step_definitions/import_steps.js) must end with .feature or .md
+    at makeSourceEnvelope (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/@cucumber/gherkin/dist/src/makeSourceEnvelope.js:36:15)
+    at SourceMessageStream._flush (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/@cucumber/gherkin-streams/dist/src/SourceMessageStream.js:22:56)
+    at SourceMessageStream.final [as _final] (node:internal/streams/transform:128:10)
+    at prefinish (node:internal/streams/writable:916:14)
+    at finishMaybe (node:internal/streams/writable:930:5)
+    at Writable.end (node:internal/streams/writable:845:5)
+    at ReadStream.onend (node:internal/streams/readable:948:10)
+    at Object.onceWrapper (node:events:632:28)
+    at ReadStream.emit (node:events:518:28)
+    at endReadableNT (node:internal/streams/readable:1698:12)

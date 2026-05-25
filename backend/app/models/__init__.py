@@ -25,6 +25,13 @@ from app.models.hotel import (
 from app.models.room import RoomExtension
 from app.models.import_history import ImportHistory, ImportType, ImportStatus
 from app.models.export_history import ExportHistory, ExportType, ExportFormat, ExportStatus
+from app.models.booking import (
+    BookingHotel,
+    BookingHotelExtension,
+    BookingRoom,
+    BookingRoomExtension,
+    BookingSource,
+)
 from app.models.expedia_template import (
     ExpediaTemplate,
     FieldMapping,
@@ -32,6 +39,11 @@ from app.models.expedia_template import (
     TemplateStatus,
     FieldMappingType,
 )
+from app.models.terminology import (
+    Terminology,
+    TerminologyCategory,
+)
+from app.models.booking_reference import BookingReference
 
 __all__ = [
     "BaseModel",
@@ -60,9 +72,17 @@ __all__ = [
     "ExportType",
     "ExportFormat",
     "ExportStatus",
+    "BookingHotel",
+    "BookingHotelExtension",
+    "BookingRoom",
+    "BookingRoomExtension",
+    "BookingSource",
     "ExpediaTemplate",
     "FieldMapping",
     "TemplateType",
     "TemplateStatus",
     "FieldMappingType",
+    "Terminology",
+    "TerminologyCategory",
+    "BookingReference",
 ]

@@ -85,6 +85,19 @@ class HotelUpdate(BaseModel):
     expedia_chain_code: Optional[str] = Field(None, max_length=50, description="Expedia Chain Code")
     expedia_property_code: Optional[str] = Field(None, max_length=50, description="Expedia Property Code")
 
+    # Booking.com extension fields
+    check_in_time: Optional[str] = Field(None, max_length=20, description="Check-in time")
+    check_out_time: Optional[str] = Field(None, max_length=20, description="Check-out time")
+    cancellation_policy: Optional[str] = Field(None, description="Cancellation policy")
+    prepayment_policy: Optional[str] = Field(None, description="Prepayment policy")
+    kid_policy: Optional[str] = Field(None, description="Children policy")
+    pet_policy: Optional[str] = Field(None, description="Pet policy")
+    services: Optional[str] = Field(None, description="Hotel services")
+    facilities: Optional[str] = Field(None, description="Hotel facilities")
+    description: Optional[str] = Field(None, description="Hotel description")
+    review_score: Optional[float] = Field(None, description="Review score")
+    review_count: Optional[int] = Field(None, description="Review count")
+
     # Timestamps
     opened_at: Optional[datetime] = Field(None, description="Hotel opening date")
     renovated_at: Optional[datetime] = Field(None, description="Last renovation date")

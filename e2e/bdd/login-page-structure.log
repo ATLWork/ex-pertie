@@ -1,0 +1,8 @@
+=== 登录页所有输入框 ===
+输入框：type=text, name=null, placeholder=Username, id=username
+输入框：type=password, name=null, placeholder=Password, id=password
+
+=== 登录页所有按钮 ===
+按钮：type=button, text=
+按钮：type=submit, text=Login
+按钮：type=null, text=

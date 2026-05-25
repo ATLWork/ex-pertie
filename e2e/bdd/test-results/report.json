@@ -1,0 +1,1926 @@
+[
+  {
+    "description": "  描述：验证系统登录、权限校验、退出登录等身份相关功能",
+    "elements": [
+      {
+        "description": "",
+        "id": "用户身份认证;管理员账号正常登录成功",
+        "keyword": "Scenario",
+        "line": 12,
+        "name": "管理员账号正常登录成功",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 93670208
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "系统服务运行正常",
+            "match": {
+              "location": "step_definitions/common_steps.js:20"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 13784708
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "邮箱",
+                      "密码",
+                      "用户名",
+                      "角色"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "admin@example.com",
+                      "Admin123456",
+                      "Admin User",
+                      "超级管理员"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "test@example.com",
+                      "Test123456",
+                      "Test User",
+                      "运营人员"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "viewer@example.com",
+                      "Viewer123456",
+                      "Viewer User",
+                      "只读用户"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "And ",
+            "line": 5,
+            "name": "测试数据库已初始化，存在以下账号：",
+            "match": {
+              "location": "step_definitions/common_steps.js:29"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 374459
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 13,
+            "name": "用户访问系统登录页",
+            "match": {
+              "location": "step_definitions/common_steps.js:33"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1147609791
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 14,
+            "name": "输入邮箱 \"admin@example.com\"，密码 \"Admin123456\"",
+            "match": {
+              "location": "step_definitions/common_steps.js:39"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 50881208
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 15,
+            "name": "点击登录按钮",
+            "match": {
+              "location": "step_definitions/common_steps.js:64"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3583327458
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 16,
+            "name": "系统登录成功，跳转至首页",
+            "match": {
+              "location": "step_definitions/common_steps.js:92"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 697340541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 17,
+            "name": "页面顶部显示欢迎信息包含 \"Admin User\"",
+            "match": {
+              "location": "step_definitions/common_steps.js:112"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 662749
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 16808291
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@P0",
+            "line": 11
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "用户身份认证;普通用户正常登录成功",
+        "keyword": "Scenario",
+        "line": 20,
+        "name": "普通用户正常登录成功",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 80407250
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "系统服务运行正常",
+            "match": {
+              "location": "step_definitions/common_steps.js:20"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1949000
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "邮箱",
+                      "密码",
+                      "用户名",
+                      "角色"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "admin@example.com",
+                      "Admin123456",
+                      "Admin User",
+                      "超级管理员"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "test@example.com",
+                      "Test123456",
+                      "Test User",
+                      "运营人员"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "viewer@example.com",
+                      "Viewer123456",
+                      "Viewer User",
+                      "只读用户"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "And ",
+            "line": 5,
+            "name": "测试数据库已初始化，存在以下账号：",
+            "match": {
+              "location": "step_definitions/common_steps.js:29"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 128541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 21,
+            "name": "用户访问系统登录页",
+            "match": {
+              "location": "step_definitions/common_steps.js:33"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1137915875
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 22,
+            "name": "输入邮箱 \"test@example.com\"，密码 \"Test123456\"",
+            "match": {
+              "location": "step_definitions/common_steps.js:39"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 47242083
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 23,
+            "name": "点击登录按钮",
+            "match": {
+              "location": "step_definitions/common_steps.js:64"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3582356958
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 24,
+            "name": "系统登录成功，跳转至首页",
+            "match": {
+              "location": "step_definitions/common_steps.js:92"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 694897332
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 15592208
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@P0",
+            "line": 19
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "用户身份认证;登录异常场景测试",
+        "keyword": "Scenario Outline",
+        "line": 35,
+        "name": "登录异常场景测试",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 83819666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "系统服务运行正常",
+            "match": {
+              "location": "step_definitions/common_steps.js:20"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2106292
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "邮箱",
+                      "密码",
+                      "用户名",
+                      "角色"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "admin@example.com",
+                      "Admin123456",
+                      "Admin User",
+                      "超级管理员"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "test@example.com",
+                      "Test123456",
+                      "Test User",
+                      "运营人员"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "viewer@example.com",
+                      "Viewer123456",
+                      "Viewer User",
+                      "只读用户"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "And ",
+            "line": 5,
+            "name": "测试数据库已初始化，存在以下账号：",
+            "match": {
+              "location": "step_definitions/common_steps.js:29"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 30708
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 28,
+            "name": "用户访问系统登录页",
+            "match": {
+              "location": "step_definitions/common_steps.js:33"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1157644292
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 29,
+            "name": "输入邮箱 \"test@example.com\"，密码 \"WrongPass123\"",
+            "match": {
+              "location": "step_definitions/common_steps.js:39"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 49762749
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 30,
+            "name": "点击登录按钮",
+            "match": {
+              "location": "step_definitions/common_steps.js:64"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3585667333
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 31,
+            "name": "登录失败，页面显示错误提示 \"用户名或密码错误，请重试\"",
+            "match": {
+              "location": "step_definitions/common_steps.js:123"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 5002475749,
+              "error_message": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('.ant-message-error:has-text(\"用户名或密码错误，请重试\"), .ant-message:has-text(\"用户名或密码错误，请重试\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"to.be.visible\" with timeout 5000ms\n  - waiting for locator('.ant-message-error:has-text(\"用户名或密码错误，请重试\"), .ant-message:has-text(\"用户名或密码错误，请重试\")')\n\n    at captureRawStack (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright-core/lib/coreBundle.js:3130:17)\n    at callMatcherAsStep (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12873:57)\n    at Object.toBeVisible (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12863:23)\n    at World.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/step_definitions/common_steps.js:126:26)"
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 17942917
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@P1",
+            "line": 26
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "用户身份认证;登录异常场景测试",
+        "keyword": "Scenario Outline",
+        "line": 36,
+        "name": "登录异常场景测试",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 85274832
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "系统服务运行正常",
+            "match": {
+              "location": "step_definitions/common_steps.js:20"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2059291
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "邮箱",
+                      "密码",
+                      "用户名",
+                      "角色"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "admin@example.com",
+                      "Admin123456",
+                      "Admin User",
+                      "超级管理员"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "test@example.com",
+                      "Test123456",
+                      "Test User",
+                      "运营人员"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "viewer@example.com",
+                      "Viewer123456",
+                      "Viewer User",
+                      "只读用户"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "And ",
+            "line": 5,
+            "name": "测试数据库已初始化，存在以下账号：",
+            "match": {
+              "location": "step_definitions/common_steps.js:29"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 26375
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 28,
+            "name": "用户访问系统登录页",
+            "match": {
+              "location": "step_definitions/common_steps.js:33"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1119987375
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 29,
+            "name": "输入邮箱 \"notexist@test.com\"，密码 \"Test123456\"",
+            "match": {
+              "location": "step_definitions/common_steps.js:39"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 47611541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 30,
+            "name": "点击登录按钮",
+            "match": {
+              "location": "step_definitions/common_steps.js:64"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3591801584
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 31,
+            "name": "登录失败，页面显示错误提示 \"该账号不存在，请先注册\"",
+            "match": {
+              "location": "step_definitions/common_steps.js:123"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 5000646583,
+              "error_message": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('.ant-message-error:has-text(\"该账号不存在，请先注册\"), .ant-message:has-text(\"该账号不存在，请先注册\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"to.be.visible\" with timeout 5000ms\n  - waiting for locator('.ant-message-error:has-text(\"该账号不存在，请先注册\"), .ant-message:has-text(\"该账号不存在，请先注册\")')\n\n    at captureRawStack (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright-core/lib/coreBundle.js:3130:17)\n    at callMatcherAsStep (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12873:57)\n    at Object.toBeVisible (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12863:23)\n    at World.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/step_definitions/common_steps.js:126:26)"
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 15549250
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@P1",
+            "line": 26
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "用户身份认证;登录异常场景测试",
+        "keyword": "Scenario Outline",
+        "line": 37,
+        "name": "登录异常场景测试",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 83035958
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "系统服务运行正常",
+            "match": {
+              "location": "step_definitions/common_steps.js:20"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1906917
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "邮箱",
+                      "密码",
+                      "用户名",
+                      "角色"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "admin@example.com",
+                      "Admin123456",
+                      "Admin User",
+                      "超级管理员"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "test@example.com",
+                      "Test123456",
+                      "Test User",
+                      "运营人员"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "viewer@example.com",
+                      "Viewer123456",
+                      "Viewer User",
+                      "只读用户"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "And ",
+            "line": 5,
+            "name": "测试数据库已初始化，存在以下账号：",
+            "match": {
+              "location": "step_definitions/common_steps.js:29"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 23417
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 28,
+            "name": "用户访问系统登录页",
+            "match": {
+              "location": "step_definitions/common_steps.js:33"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1116179166
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 29,
+            "name": "输入邮箱 \"<empty>\"，密码 \"Test123456\"",
+            "match": {
+              "location": "step_definitions/common_steps.js:39"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 44344541
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 30,
+            "name": "点击登录按钮",
+            "match": {
+              "location": "step_definitions/common_steps.js:64"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3545695832
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 31,
+            "name": "登录失败，页面显示错误提示 \"请输入邮箱地址\"",
+            "match": {
+              "location": "step_definitions/common_steps.js:123"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 5001104500,
+              "error_message": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('.ant-message-error:has-text(\"请输入邮箱地址\"), .ant-message:has-text(\"请输入邮箱地址\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"to.be.visible\" with timeout 5000ms\n  - waiting for locator('.ant-message-error:has-text(\"请输入邮箱地址\"), .ant-message:has-text(\"请输入邮箱地址\")')\n\n    at captureRawStack (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright-core/lib/coreBundle.js:3130:17)\n    at callMatcherAsStep (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12873:57)\n    at Object.toBeVisible (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12863:23)\n    at World.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/step_definitions/common_steps.js:126:26)"
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 16113957
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@P1",
+            "line": 26
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "用户身份认证;登录异常场景测试",
+        "keyword": "Scenario Outline",
+        "line": 38,
+        "name": "登录异常场景测试",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 96422666
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "系统服务运行正常",
+            "match": {
+              "location": "step_definitions/common_steps.js:20"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2110874
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "邮箱",
+                      "密码",
+                      "用户名",
+                      "角色"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "admin@example.com",
+                      "Admin123456",
+                      "Admin User",
+                      "超级管理员"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "test@example.com",
+                      "Test123456",
+                      "Test User",
+                      "运营人员"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "viewer@example.com",
+                      "Viewer123456",
+                      "Viewer User",
+                      "只读用户"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "And ",
+            "line": 5,
+            "name": "测试数据库已初始化，存在以下账号：",
+            "match": {
+              "location": "step_definitions/common_steps.js:29"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 26375
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 28,
+            "name": "用户访问系统登录页",
+            "match": {
+              "location": "step_definitions/common_steps.js:33"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1112818542
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 29,
+            "name": "输入邮箱 \"test@example.com\"，密码 \"<empty>\"",
+            "match": {
+              "location": "step_definitions/common_steps.js:39"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 41248791
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 30,
+            "name": "点击登录按钮",
+            "match": {
+              "location": "step_definitions/common_steps.js:64"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3545066332
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 31,
+            "name": "登录失败，页面显示错误提示 \"请输入密码\"",
+            "match": {
+              "location": "step_definitions/common_steps.js:123"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 5000729541,
+              "error_message": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('.ant-message-error:has-text(\"请输入密码\"), .ant-message:has-text(\"请输入密码\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"to.be.visible\" with timeout 5000ms\n  - waiting for locator('.ant-message-error:has-text(\"请输入密码\"), .ant-message:has-text(\"请输入密码\")')\n\n    at captureRawStack (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright-core/lib/coreBundle.js:3130:17)\n    at callMatcherAsStep (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12873:57)\n    at Object.toBeVisible (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12863:23)\n    at World.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/step_definitions/common_steps.js:126:26)"
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 19377542
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@P1",
+            "line": 26
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "用户身份认证;正常退出登录",
+        "keyword": "Scenario",
+        "line": 41,
+        "name": "正常退出登录",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 83519916
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "系统服务运行正常",
+            "match": {
+              "location": "step_definitions/common_steps.js:20"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2113958
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "邮箱",
+                      "密码",
+                      "用户名",
+                      "角色"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "admin@example.com",
+                      "Admin123456",
+                      "Admin User",
+                      "超级管理员"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "test@example.com",
+                      "Test123456",
+                      "Test User",
+                      "运营人员"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "viewer@example.com",
+                      "Viewer123456",
+                      "Viewer User",
+                      "只读用户"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "And ",
+            "line": 5,
+            "name": "测试数据库已初始化，存在以下账号：",
+            "match": {
+              "location": "step_definitions/common_steps.js:29"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 25499
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 42,
+            "name": "用户已使用admin账号登录系统",
+            "match": {
+              "location": "step_definitions/common_steps.js:129"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 10755823209,
+              "error_message": "page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n  navigated to \"http://localhost:3000/login\"\n  navigated to \"http://localhost:3000/login\"\n============================================================\n    at World.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/step_definitions/common_steps.js:141:19)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 43,
+            "name": "用户点击右上角\"退出登录\"按钮",
+            "match": {
+              "location": "step_definitions/common_steps.js:144"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 44,
+            "name": "系统成功退出，跳转至登录页",
+            "match": {
+              "location": "step_definitions/common_steps.js:150"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 15463541
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@P1",
+            "line": 40
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "用户身份认证",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "用户身份认证",
+    "tags": [],
+    "uri": "features/auth.feature"
+  },
+  {
+    "description": "  描述：模拟真实用户完整操作流程，验证端到端链路正确性",
+    "elements": [
+      {
+        "description": "",
+        "id": "完整业务链路测试;运营人员完整操作链路",
+        "keyword": "Scenario",
+        "line": 7,
+        "name": "运营人员完整操作链路",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 91062583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "系统运行正常，运营人员账号test@example.com已注册",
+            "match": {
+              "location": "step_definitions/common_steps.js:25"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 718250
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 8,
+            "name": "用户访问系统登录页",
+            "match": {
+              "location": "step_definitions/common_steps.js:33"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1093783457
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 9,
+            "name": "输入用户名 \"adminuser\"，密码 \"Admin123456\"",
+            "match": {
+              "location": "step_definitions/common_steps.js:54"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 49423709
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 10,
+            "name": "点击登录按钮",
+            "match": {
+              "location": "step_definitions/common_steps.js:64"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3550878458
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 11,
+            "name": "系统登录成功，跳转至首页",
+            "match": {
+              "location": "step_definitions/common_steps.js:92"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 715428667
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 15941458
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@P0",
+            "line": 6
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "完整业务链路测试",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "完整业务链路测试",
+    "tags": [],
+    "uri": "features/end_to_end.feature"
+  },
+  {
+    "description": "  描述：验证Expedia格式Excel模板生成和下载功能",
+    "elements": [
+      {
+        "description": "",
+        "id": "expedia模板导出;导出全部酒店数据",
+        "keyword": "Scenario",
+        "line": 8,
+        "name": "导出全部酒店数据",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 84263458
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "系统运行正常，用户已使用admin账号登录",
+            "match": {
+              "location": "step_definitions/import_steps.js:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10762581958
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 5,
+            "name": "系统已存在已完成翻译的酒店数据",
+            "match": {
+              "location": "step_definitions/export_steps.js:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 197457
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 9,
+            "name": "用户进入\"导出管理\"页面",
+            "match": {
+              "location": "step_definitions/export_steps.js:8"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 760303249
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 10,
+            "name": "选择\"全选\"所有数据",
+            "match": {
+              "location": "step_definitions/export_steps.js:13"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 15001751999,
+              "error_message": "Error: function timed out, ensure the promise resolves within 15000 milliseconds\n    at Timeout.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/@cucumber/cucumber/lib/time.js:54:20)\n    at listOnTimeout (node:internal/timers:594:17)\n    at process.processTimers (node:internal/timers:529:7)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 11,
+            "name": "选择导出格式为\"Expedia标准模板\"",
+            "match": {
+              "location": "step_definitions/export_steps.js:18"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 12,
+            "name": "点击\"导出\"按钮",
+            "match": {
+              "location": "step_definitions/export_steps.js:23"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 13,
+            "name": "系统开始生成文件，5秒内文件生成完成自动下载",
+            "match": {
+              "location": "step_definitions/export_steps.js:28"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 14,
+            "name": "下载文件名为\"Expedia酒店数据_\"开头的xlsx文件",
+            "match": {
+              "location": "step_definitions/export_steps.js:35"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 23206374
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@P0",
+            "line": 7
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "expedia模板导出",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Expedia模板导出",
+    "tags": [],
+    "uri": "features/export.feature"
+  },
+  {
+    "description": "  描述：验证酒店/房间数据文件上传、解析、校验、导入全流程功能",
+    "elements": [
+      {
+        "description": "",
+        "id": "酒店数据导入;正常导入excel格式酒店数据",
+        "keyword": "Scenario",
+        "line": 7,
+        "name": "正常导入Excel格式酒店数据",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 97493249
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "系统运行正常，用户已使用admin账号登录",
+            "match": {
+              "location": "step_definitions/import_steps.js:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10817284542
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 8,
+            "name": "用户进入\"数据导入\"页面",
+            "match": {
+              "location": "step_definitions/import_steps.js:21"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 145732957
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 9,
+            "name": "选择标准有效Excel文件上传",
+            "match": {
+              "location": "step_definitions/import_steps.js:26"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 55313125
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 10,
+            "name": "文件上传成功，系统解析完成后显示数据预览",
+            "match": {
+              "location": "step_definitions/import_steps.js:36"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 10001644417,
+              "error_message": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('.import-preview, .data-preview')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"to.be.visible\" with timeout 10000ms\n  - waiting for locator('.import-preview, .data-preview')\n    - waiting for\" http://localhost:3000/login\" navigation to finish...\n    - navigated to \"http://localhost:3000/login\"\n\n    at captureRawStack (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright-core/lib/coreBundle.js:3130:17)\n    at callMatcherAsStep (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12873:57)\n    at Object.toBeVisible (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12863:23)\n    at World.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/step_definitions/import_steps.js:38:29)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 11,
+            "name": "用户点击\"确认导入\"按钮",
+            "match": {
+              "location": "step_definitions/import_steps.js:41"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 12,
+            "name": "数据导入成功，提示导入成功信息",
+            "match": {
+              "location": "step_definitions/import_steps.js:48"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 13,
+            "name": "酒店列表页显示导入的数据",
+            "match": {
+              "location": "step_definitions/import_steps.js:53"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 17800124
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@P0",
+            "line": 6
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "酒店数据导入;异常文件导入测试",
+        "keyword": "Scenario Outline",
+        "line": 23,
+        "name": "异常文件导入测试",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 102385915
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "系统运行正常，用户已使用admin账号登录",
+            "match": {
+              "location": "step_definitions/import_steps.js:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10765521000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 17,
+            "name": "用户进入\"数据导入\"页面",
+            "match": {
+              "location": "step_definitions/import_steps.js:21"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 140923792
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 18,
+            "name": "选择文件 \"empty_file.xlsx\" 上传",
+            "match": {
+              "location": "step_definitions/import_steps.js:59"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 51737291
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 19,
+            "name": "导入失败，显示错误提示 \"文件内容为空，请上传包含有效酒店数据的文件\"",
+            "match": {
+              "location": "step_definitions/import_steps.js:83"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 1209124,
+              "error_message": "Error: expect(locator).toBeVisible() failed\n\nLocator: .ant-message-error, .ant-alert, text=\"文件内容为空，请上传包含有效酒店数据的文件\"\nExpected: visible\nError: Unexpected token \"=\" while parsing css selector \".ant-message-error, .ant-alert, text=\"文件内容为空，请上传包含有效酒店数据的文件\"\". Did you mean to CSS.escape it?\n\nCall log:\n  - Expect \"to.be.visible\" with timeout 10000ms\n  - waiting for .ant-message-error, .ant-alert, text=\"文件内容为空，请上传包含有效酒店数据的文件\"\n\n    at captureRawStack (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright-core/lib/coreBundle.js:3130:17)\n    at callMatcherAsStep (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12873:57)\n    at Object.toBeVisible (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12863:23)\n    at World.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/step_definitions/import_steps.js:85:26)"
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 47934416
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@P1",
+            "line": 15
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "酒店数据导入;异常文件导入测试",
+        "keyword": "Scenario Outline",
+        "line": 24,
+        "name": "异常文件导入测试",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 87057208
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "系统运行正常，用户已使用admin账号登录",
+            "match": {
+              "location": "step_definitions/import_steps.js:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10759330874
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 17,
+            "name": "用户进入\"数据导入\"页面",
+            "match": {
+              "location": "step_definitions/import_steps.js:21"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 124764958
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 18,
+            "name": "选择文件 \"invalid_format.docx\" 上传",
+            "match": {
+              "location": "step_definitions/import_steps.js:59"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 52160957
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 19,
+            "name": "导入失败，显示错误提示 \"文件格式不支持，请上传.xlsx/.xls/.csv格式的文件\"",
+            "match": {
+              "location": "step_definitions/import_steps.js:83"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 924083,
+              "error_message": "Error: expect(locator).toBeVisible() failed\n\nLocator: .ant-message-error, .ant-alert, text=\"文件格式不支持，请上传.xlsx/.xls/.csv格式的文件\"\nExpected: visible\nError: Unexpected token \"=\" while parsing css selector \".ant-message-error, .ant-alert, text=\"文件格式不支持，请上传.xlsx/.xls/.csv格式的文件\"\". Did you mean to CSS.escape it?\n\nCall log:\n  - Expect \"to.be.visible\" with timeout 10000ms\n  - waiting for .ant-message-error, .ant-alert, text=\"文件格式不支持，请上传.xlsx/.xls/.csv格式的文件\"\n\n    at captureRawStack (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright-core/lib/coreBundle.js:3130:17)\n    at callMatcherAsStep (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12873:57)\n    at Object.toBeVisible (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12863:23)\n    at World.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/step_definitions/import_steps.js:85:26)"
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 45332958
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@P1",
+            "line": 15
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "酒店数据导入;异常文件导入测试",
+        "keyword": "Scenario Outline",
+        "line": 25,
+        "name": "异常文件导入测试",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 83643207
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "系统运行正常，用户已使用admin账号登录",
+            "match": {
+              "location": "step_definitions/import_steps.js:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10752135375
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 17,
+            "name": "用户进入\"数据导入\"页面",
+            "match": {
+              "location": "step_definitions/import_steps.js:21"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 138254583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 18,
+            "name": "选择文件 \"missing_required_field.xlsx\" 上传",
+            "match": {
+              "location": "step_definitions/import_steps.js:59"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 53012208
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 19,
+            "name": "导入失败，显示错误提示 \"缺失必填字段'酒店名称'，请修正后重新上传\"",
+            "match": {
+              "location": "step_definitions/import_steps.js:83"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 797958,
+              "error_message": "Error: expect(locator).toBeVisible() failed\n\nLocator: .ant-message-error, .ant-alert, text=\"缺失必填字段'酒店名称'，请修正后重新上传\"\nExpected: visible\nError: Unexpected token \"=\" while parsing css selector \".ant-message-error, .ant-alert, text=\"缺失必填字段'酒店名称'，请修正后重新上传\"\". Did you mean to CSS.escape it?\n\nCall log:\n  - Expect \"to.be.visible\" with timeout 10000ms\n  - waiting for .ant-message-error, .ant-alert, text=\"缺失必填字段'酒店名称'，请修正后重新上传\"\n\n    at captureRawStack (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright-core/lib/coreBundle.js:3130:17)\n    at callMatcherAsStep (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12873:57)\n    at Object.toBeVisible (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12863:23)\n    at World.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/step_definitions/import_steps.js:85:26)"
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 44725083
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@P1",
+            "line": 15
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "酒店数据导入",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "酒店数据导入",
+    "tags": [],
+    "uri": "features/import.feature"
+  },
+  {
+    "description": "  描述：验证术语库、翻译规则、AI翻译、结果编辑等功能",
+    "elements": [
+      {
+        "description": "",
+        "id": "翻译管理;添加新翻译术语",
+        "keyword": "Scenario",
+        "line": 8,
+        "name": "添加新翻译术语",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 82423249
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "系统运行正常，用户已使用admin账号登录",
+            "match": {
+              "location": "step_definitions/import_steps.js:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10763813124
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 5,
+            "name": "系统已导入测试酒店数据",
+            "match": {
+              "location": "step_definitions/common_steps.js:157"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 547749
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 9,
+            "name": "用户进入\"术语管理\"页面",
+            "match": {
+              "location": "step_definitions/translation_steps.js:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 508871790
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 10,
+            "name": "点击\"新增术语\"按钮",
+            "match": {
+              "location": "step_definitions/translation_steps.js:9"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 15001400832,
+              "error_message": "Error: function timed out, ensure the promise resolves within 15000 milliseconds\n    at Timeout.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/@cucumber/cucumber/lib/time.js:54:20)\n    at listOnTimeout (node:internal/timers:594:17)\n    at process.processTimers (node:internal/timers:529:7)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 11,
+            "name": "输入中文：\"酒店\"，英文：\"Hotel\"，备注：\"通用酒店翻译\"",
+            "match": {
+              "location": "step_definitions/translation_steps.js:14"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 12,
+            "name": "点击\"保存\"按钮",
+            "match": {
+              "location": "step_definitions/translation_steps.js:20"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 13,
+            "name": "术语保存成功，术语列表显示新增的\"酒店\"-\"Hotel\"术语",
+            "match": {
+              "location": "step_definitions/translation_steps.js:24"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 18200666
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@P0",
+            "line": 7
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "翻译管理;批量数据翻译",
+        "keyword": "Scenario",
+        "line": 16,
+        "name": "批量数据翻译",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 95297791
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "系统运行正常，用户已使用admin账号登录",
+            "match": {
+              "location": "step_definitions/import_steps.js:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10754039083
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 5,
+            "name": "系统已导入测试酒店数据",
+            "match": {
+              "location": "step_definitions/common_steps.js:157"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 102959
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 17,
+            "name": "用户进入翻译管理页，选中所有未翻译数据",
+            "match": {
+              "location": "step_definitions/translation_steps.js:31"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 15001347917,
+              "error_message": "Error: function timed out, ensure the promise resolves within 15000 milliseconds\n    at Timeout.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/@cucumber/cucumber/lib/time.js:54:20)\n    at listOnTimeout (node:internal/timers:594:17)\n    at process.processTimers (node:internal/timers:529:7)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 18,
+            "name": "点击\"批量翻译\"按钮",
+            "match": {
+              "location": "step_definitions/translation_steps.js:37"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 19,
+            "name": "系统显示翻译进度条，所有数据在10秒内翻译完成",
+            "match": {
+              "location": "step_definitions/translation_steps.js:42"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 22245415
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@P0",
+            "line": 15
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "翻译管理",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "翻译管理",
+    "tags": [],
+    "uri": "features/translation.feature"
+  }
+]

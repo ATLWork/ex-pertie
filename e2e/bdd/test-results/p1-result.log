@@ -1,0 +1,229 @@
+
+> expedia-e2e-tests@1.0.0 test:p1
+> cucumber-js features/**/*.feature --tags '@P1' --require step_definitions/**/*.js --require support/hooks.js
+
+....F-U.....F-U.....U-U.....U-U....UUU..F-UU..F-UU..F-UU.
+
+Failures:
+
+1) Scenario: 登录异常场景测试 # features/auth.feature:35
+   ✔ Before # step_definitions/common_steps.js:10
+   ✔ Given 系统服务运行正常 # step_definitions/common_steps.js:22
+   ✔ And 测试数据库已初始化，存在以下账号： # step_definitions/common_steps.js:83
+       | 邮箱               | 密码         | 用户名      | 角色       |
+       | admin@example.com  | Admin123456  | Admin User  | 超级管理员 |
+       | test@example.com   | Test123456   | Test User   | 运营人员   |
+       | viewer@example.com | Viewer123456 | Viewer User | 只读用户   |
+   ✔ When 用户访问系统登录页 # step_definitions/common_steps.js:31
+   ✖ And 输入邮箱 "test@example.com"，密码 "WrongPass123" # step_definitions/common_steps.js:35
+       Error: function timed out, ensure the promise resolves within 10000 milliseconds
+           at Timeout.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/@cucumber/cucumber/lib/time.js:54:20)
+           at listOnTimeout (node:internal/timers:594:17)
+           at process.processTimers (node:internal/timers:529:7)
+   - And 点击登录按钮 # step_definitions/common_steps.js:58
+   ? Then 登录失败，页面显示错误提示 "用户名或密码错误，请重试"
+       Undefined. Implement with the following snippet:
+
+         Then('登录失败，页面显示错误提示 {string}', function (string) {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+   ✔ After # step_definitions/common_steps.js:16
+
+2) Scenario: 登录异常场景测试 # features/auth.feature:36
+   ✔ Before # step_definitions/common_steps.js:10
+   ✔ Given 系统服务运行正常 # step_definitions/common_steps.js:22
+   ✔ And 测试数据库已初始化，存在以下账号： # step_definitions/common_steps.js:83
+       | 邮箱               | 密码         | 用户名      | 角色       |
+       | admin@example.com  | Admin123456  | Admin User  | 超级管理员 |
+       | test@example.com   | Test123456   | Test User   | 运营人员   |
+       | viewer@example.com | Viewer123456 | Viewer User | 只读用户   |
+   ✔ When 用户访问系统登录页 # step_definitions/common_steps.js:31
+   ✖ And 输入邮箱 "notexist@test.com"，密码 "Test123456" # step_definitions/common_steps.js:35
+       Error: function timed out, ensure the promise resolves within 10000 milliseconds
+           at Timeout.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/@cucumber/cucumber/lib/time.js:54:20)
+           at listOnTimeout (node:internal/timers:594:17)
+           at process.processTimers (node:internal/timers:529:7)
+   - And 点击登录按钮 # step_definitions/common_steps.js:58
+   ? Then 登录失败，页面显示错误提示 "该账号不存在，请先注册"
+       Undefined. Implement with the following snippet:
+
+         Then('登录失败，页面显示错误提示 {string}', function (string) {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+   ✔ After # step_definitions/common_steps.js:16
+
+3) Scenario: 登录异常场景测试 # features/auth.feature:37
+   ✔ Before # step_definitions/common_steps.js:10
+   ✔ Given 系统服务运行正常 # step_definitions/common_steps.js:22
+   ✔ And 测试数据库已初始化，存在以下账号： # step_definitions/common_steps.js:83
+       | 邮箱               | 密码         | 用户名      | 角色       |
+       | admin@example.com  | Admin123456  | Admin User  | 超级管理员 |
+       | test@example.com   | Test123456   | Test User   | 运营人员   |
+       | viewer@example.com | Viewer123456 | Viewer User | 只读用户   |
+   ✔ When 用户访问系统登录页 # step_definitions/common_steps.js:31
+   ? And 输入邮箱 """"，密码 "Test123456"
+       Undefined. Implement with the following snippet:
+
+         When('输入邮箱 {string}{string}，密码 {string}', function (string, string2, string3) {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+   - And 点击登录按钮 # step_definitions/common_steps.js:58
+   ? Then 登录失败，页面显示错误提示 "请输入邮箱地址"
+       Undefined. Implement with the following snippet:
+
+         Then('登录失败，页面显示错误提示 {string}', function (string) {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+   ✔ After # step_definitions/common_steps.js:16
+
+4) Scenario: 登录异常场景测试 # features/auth.feature:38
+   ✔ Before # step_definitions/common_steps.js:10
+   ✔ Given 系统服务运行正常 # step_definitions/common_steps.js:22
+   ✔ And 测试数据库已初始化，存在以下账号： # step_definitions/common_steps.js:83
+       | 邮箱               | 密码         | 用户名      | 角色       |
+       | admin@example.com  | Admin123456  | Admin User  | 超级管理员 |
+       | test@example.com   | Test123456   | Test User   | 运营人员   |
+       | viewer@example.com | Viewer123456 | Viewer User | 只读用户   |
+   ✔ When 用户访问系统登录页 # step_definitions/common_steps.js:31
+   ? And 输入邮箱 "test@example.com"，密码 """"
+       Undefined. Implement with the following snippet:
+
+         When('输入邮箱 {string}，密码 {string}{string}', function (string, string2, string3) {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+   - And 点击登录按钮 # step_definitions/common_steps.js:58
+   ? Then 登录失败，页面显示错误提示 "请输入密码"
+       Undefined. Implement with the following snippet:
+
+         Then('登录失败，页面显示错误提示 {string}', function (string) {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+   ✔ After # step_definitions/common_steps.js:16
+
+5) Scenario: 正常退出登录 # features/auth.feature:41
+   ✔ Before # step_definitions/common_steps.js:10
+   ✔ Given 系统服务运行正常 # step_definitions/common_steps.js:22
+   ✔ And 测试数据库已初始化，存在以下账号： # step_definitions/common_steps.js:83
+       | 邮箱               | 密码         | 用户名      | 角色       |
+       | admin@example.com  | Admin123456  | Admin User  | 超级管理员 |
+       | test@example.com   | Test123456   | Test User   | 运营人员   |
+       | viewer@example.com | Viewer123456 | Viewer User | 只读用户   |
+   ? Given 用户已使用admin账号登录系统
+       Undefined. Implement with the following snippet:
+
+         Given('用户已使用admin账号登录系统', function () {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+   ? When 用户点击右上角"退出登录"按钮
+       Undefined. Implement with the following snippet:
+
+         When('用户点击右上角"退出登录"按钮', function () {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+   ? Then 系统成功退出，跳转至登录页
+       Undefined. Implement with the following snippet:
+
+         Then('系统成功退出，跳转至登录页', function () {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+   ✔ After # step_definitions/common_steps.js:16
+
+6) Scenario: 异常文件导入测试 # features/import.feature:23
+   ✔ Before # step_definitions/common_steps.js:10
+   ✖ Given 系统运行正常，用户已使用admin账号登录 # step_definitions/import_steps.js:4
+       Error: function timed out, ensure the promise resolves within 10000 milliseconds
+           at Timeout.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/@cucumber/cucumber/lib/time.js:54:20)
+           at listOnTimeout (node:internal/timers:594:17)
+           at process.processTimers (node:internal/timers:529:7)
+   - When 用户进入"数据导入"页面 # step_definitions/import_steps.js:16
+   ? And 选择文件 "empty_file.xlsx" 上传
+       Undefined. Implement with the following snippet:
+
+         When('选择文件 {string} 上传', function (string) {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+   ? Then 导入失败，显示错误提示 "文件内容为空，请上传包含有效酒店数据的文件"
+       Undefined. Implement with the following snippet:
+
+         Then('导入失败，显示错误提示 {string}', function (string) {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+   ✔ After # step_definitions/common_steps.js:16
+
+7) Scenario: 异常文件导入测试 # features/import.feature:24
+   ✔ Before # step_definitions/common_steps.js:10
+   ✖ Given 系统运行正常，用户已使用admin账号登录 # step_definitions/import_steps.js:4
+       Error: function timed out, ensure the promise resolves within 10000 milliseconds
+           at Timeout.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/@cucumber/cucumber/lib/time.js:54:20)
+           at listOnTimeout (node:internal/timers:594:17)
+           at process.processTimers (node:internal/timers:529:7)
+   - When 用户进入"数据导入"页面 # step_definitions/import_steps.js:16
+   ? And 选择文件 "invalid_format.docx" 上传
+       Undefined. Implement with the following snippet:
+
+         When('选择文件 {string} 上传', function (string) {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+   ? Then 导入失败，显示错误提示 "文件格式不支持，请上传.xlsx/.xls/.csv格式的文件"
+       Undefined. Implement with the following snippet:
+
+         Then('导入失败，显示错误提示 {string}', function (string) {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+   ✔ After # step_definitions/common_steps.js:16
+
+8) Scenario: 异常文件导入测试 # features/import.feature:25
+   ✔ Before # step_definitions/common_steps.js:10
+   ✖ Given 系统运行正常，用户已使用admin账号登录 # step_definitions/import_steps.js:4
+       Error: function timed out, ensure the promise resolves within 10000 milliseconds
+           at Timeout.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/@cucumber/cucumber/lib/time.js:54:20)
+           at listOnTimeout (node:internal/timers:594:17)
+           at process.processTimers (node:internal/timers:529:7)
+   - When 用户进入"数据导入"页面 # step_definitions/import_steps.js:16
+   ? And 选择文件 "missing_required_field.xlsx" 上传
+       Undefined. Implement with the following snippet:
+
+         When('选择文件 {string} 上传', function (string) {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+   ? Then 导入失败，显示错误提示 "缺失必填字段"酒店名称"，请修正后重新上传"
+       Undefined. Implement with the following snippet:
+
+         Then('导入失败，显示错误提示 "缺失必填字段"酒店名称"，请修正后重新上传"', function () {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+   ✔ After # step_definitions/common_steps.js:16
+
+8 scenarios (5 failed, 3 undefined)
+41 steps (5 failed, 15 undefined, 7 skipped, 14 passed)
+0m53.953s (executing steps: 0m53.663s)

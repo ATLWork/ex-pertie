@@ -34,8 +34,8 @@ Feature: 用户身份认证
       | 邮箱                  | 密码             | 预期错误提示                               |
       | test@example.com      | WrongPass123     | 用户名或密码错误，请重试                     |
       | notexist@test.com     | Test123456       | 该账号不存在，请先注册                       |
-      | ""                    | Test123456       | 请输入邮箱地址                               |
-      | test@example.com      | ""               | 请输入密码                                   |
+      | <empty>               | Test123456       | 请输入邮箱地址                               |
+      | test@example.com      | <empty>          | 请输入密码                                   |
 
   @P1
   Scenario: 正常退出登录

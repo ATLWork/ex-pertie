@@ -22,4 +22,4 @@ Feature: 酒店数据导入
       | 文件名                     | 预期错误                                                     |
       | empty_file.xlsx            | 文件内容为空，请上传包含有效酒店数据的文件                     |
       | invalid_format.docx        | 文件格式不支持，请上传.xlsx/.xls/.csv格式的文件               |
-      | missing_required_field.xlsx| 缺失必填字段"酒店名称"，请修正后重新上传                       |
+      | missing_required_field.xlsx| 缺失必填字段'酒店名称'，请修正后重新上传                       |

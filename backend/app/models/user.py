@@ -46,6 +46,7 @@ class User(BaseModel):
         nullable=False,
     )
     full_name: Mapped[Optional[str]] = mapped_column(String(100))
+    asso_id: Mapped[Optional[str]] = mapped_column(String(100), index=True)
     status: Mapped[UserStatus] = mapped_column(
         Enum(UserStatus),
         default=UserStatus.PENDING,

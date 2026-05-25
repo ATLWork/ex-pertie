@@ -2,10 +2,13 @@
 Translation module schemas.
 """
 
+from datetime import datetime
 from enum import Enum
 from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
+
+from app.models.terminology import TerminologyCategory
 
 
 class TranslationSource(str, Enum):
@@ -131,6 +134,62 @@ from app.models.translation import (
     RuleType,
     TranslationType,
 )
+from app.models.terminology import TerminologyCategory
+
+
+# Terminology Schemas
+class TerminologyBase(BaseModel):
+    """Base schema for terminology."""
+
+    name: str = Field(..., max_length=255, description="Terminology entry name")
+    source_text: str = Field(..., description="Original/source text")
+    translated_text: str = Field(..., description="Translated text")
+    source_lang: str = Field(..., max_length=10, description="Source language code")
+    target_lang: str = Field(..., max_length=10, description="Target language code")
+    domain: TerminologyCategory = Field(
+        default=TerminologyCategory.GENERAL, description="Domain category"
+    )
+    notes: Optional[str] = Field(None, description="Additional notes")
+    is_active: bool = Field(default=True, description="Whether term is active")
+
+
+class TerminologyCreate(TerminologyBase):
+    """Schema for creating terminology."""
+
+    pass
+
+
+class TerminologyUpdate(BaseModel):
+    """Schema for updating terminology."""
+
+    name: Optional[str] = Field(None, max_length=255, description="Terminology entry name")
+    source_text: Optional[str] = Field(None, description="Original/source text")
+    translated_text: Optional[str] = Field(None, description="Translated text")
+    source_lang: Optional[str] = Field(None, max_length=10, description="Source language code")
+    target_lang: Optional[str] = Field(None, max_length=10, description="Target language code")
+    domain: Optional[TerminologyCategory] = Field(None, description="Domain category")
+    notes: Optional[str] = Field(None, description="Additional notes")
+    is_active: Optional[bool] = Field(None, description="Whether term is active")
+
+
+class TerminologyResponse(TerminologyBase):
+    """Schema for terminology response."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int = Field(..., description="Terminology ID")
+    created_at: datetime = Field(..., description="Created at")
+    updated_at: datetime = Field(..., description="Updated at")
+
+
+class TerminologyQuery(BaseModel):
+    """Query parameters for terminology."""
+
+    source_lang: Optional[str] = Field(None, description="Filter by source language")
+    target_lang: Optional[str] = Field(None, description="Filter by target language")
+    domain: Optional[TerminologyCategory] = Field(None, description="Filter by domain")
+    is_active: Optional[bool] = Field(None, description="Filter by active status")
+    search: Optional[str] = Field(None, description="Search term in name or source_text")
 
 # Import schemas from main translation module
 from app.schemas._translation import (
@@ -161,6 +220,7 @@ __all__ = [
     "TranslationSource",
     "TranslationStatus",
     "GlossaryCategory",
+    "TerminologyCategory",
     "ReferenceSource",
     "RuleType",
     "TranslationType",
@@ -198,4 +258,10 @@ __all__ = [
     "TranslationHistoryResponse",
     # Bulk Operations
     "TranslationReferenceBulkCreate",
+    # Terminology Schemas
+    "TerminologyBase",
+    "TerminologyCreate",
+    "TerminologyUpdate",
+    "TerminologyResponse",
+    "TerminologyQuery",
 ]

@@ -9,6 +9,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from loguru import logger
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.core.database import get_db
 from app.core.security import verify_token
@@ -45,8 +46,12 @@ async def get_current_user(
     if user_id is None:
         raise UnauthorizedError(message="Invalid token", details={"reason": "invalid_token"})
 
-    # Query user from database
-    result = await db.execute(select(User).where(User.id == user_id))
+    # Query user from database with roles
+    result = await db.execute(
+        select(User)
+        .options(selectinload(User.roles))
+        .where(User.id == user_id)
+    )
     user = result.scalar_one_or_none()
 
     if user is None:
@@ -203,7 +208,11 @@ async def get_optional_user(
     if user_id is None:
         return None
 
-    result = await db.execute(select(User).where(User.id == user_id))
+    result = await db.execute(
+        select(User)
+        .options(selectinload(User.roles))
+        .where(User.id == user_id)
+    )
     user = result.scalar_one_or_none()
 
     if user and user.is_active:

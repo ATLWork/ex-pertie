@@ -119,6 +119,41 @@ class Hotel(BaseModel):
         String(50), nullable=True, comment="Expedia Property Code"
     )
 
+    # Booking.com extension fields
+    check_in_time: Mapped[Optional[str]] = mapped_column(
+        String(20), nullable=True, comment="Check-in time"
+    )
+    check_out_time: Mapped[Optional[str]] = mapped_column(
+        String(20), nullable=True, comment="Check-out time"
+    )
+    cancellation_policy: Mapped[Optional[str]] = mapped_column(
+        Text, nullable=True, comment="Cancellation policy"
+    )
+    prepayment_policy: Mapped[Optional[str]] = mapped_column(
+        Text, nullable=True, comment="Prepayment policy"
+    )
+    kid_policy: Mapped[Optional[str]] = mapped_column(
+        Text, nullable=True, comment="Children policy"
+    )
+    pet_policy: Mapped[Optional[str]] = mapped_column(
+        Text, nullable=True, comment="Pet policy"
+    )
+    services: Mapped[Optional[str]] = mapped_column(
+        Text, nullable=True, comment="Hotel services"
+    )
+    facilities: Mapped[Optional[str]] = mapped_column(
+        Text, nullable=True, comment="Hotel facilities"
+    )
+    description: Mapped[Optional[str]] = mapped_column(
+        Text, nullable=True, comment="Hotel description"
+    )
+    review_score: Mapped[Optional[float]] = mapped_column(
+        Float, nullable=True, comment="Review score"
+    )
+    review_count: Mapped[Optional[int]] = mapped_column(
+        Integer, nullable=True, comment="Review count"
+    )
+
     # Timestamps
     opened_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime, nullable=True, comment="Hotel opening date"

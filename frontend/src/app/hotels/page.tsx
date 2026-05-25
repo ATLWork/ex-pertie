@@ -1,277 +1,378 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { DataTable } from '@/components/ui/data-table'
+import { Badge } from '@/components/ui/badge'
 import {
-  Card,
-  Table,
-  Button,
-  Input,
-  Select,
-  Space,
-  Modal,
-  Form,
-  message,
-  Tag,
-  Popconfirm,
-} from 'antd'
-import { PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
-import type { ColumnsType } from 'antd/es/table'
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog'
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from '@/components/ui/alert-dialog'
+import { useToast, Toaster } from '@/components/ui/use-toast'
 import PageLayout from '@/components/Layout/PageLayout'
-import { useHotels, useCreateHotel, useUpdateHotel, useDeleteHotel, Hotel } from '@/hooks/useHotels'
+import { useHotels, useCreateHotel, useUpdateHotel, useDeleteHotel, useUpdateHotelExtension, Hotel, HotelExtensionUpdate } from '@/hooks/useHotels'
 import { useHotelStore } from '@/stores/hotelStore'
-
-const { Search } = Input
 
 export default function HotelsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingHotel, setEditingHotel] = useState<Hotel | null>(null)
-  const [form] = Form.useForm()
-  const { hotels, total, isLoading, refetch } = useHotels()
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState<string | undefined>()
+  const [name, setName] = useState('')
+  const [nameEn, setNameEn] = useState('')
+  const [address, setAddress] = useState('')
+  const [city, setCity] = useState('')
+  const [country, setCountry] = useState('')
+  const [starRating, setStarRating] = useState<number | undefined>()
+  const [status, setStatus] = useState('draft')
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null)
+  // Extension fields
+  const [description, setDescription] = useState('')
+  const [cancellationPolicy, setCancellationPolicy] = useState('')
+  const [prepaymentPolicy, setPrepaymentPolicy] = useState('')
+  const [kidPolicy, setKidPolicy] = useState('')
+  const [petPolicy, setPetPolicy] = useState('')
+  const [services, setServices] = useState('')
+  const [facilities, setFacilities] = useState('')
+  const [checkInTime, setCheckInTime] = useState('')
+  const [checkOutTime, setCheckOutTime] = useState('')
+  const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
+  const { toast } = useToast()
+  const { hotels, total, isLoading: queryLoading, refetch } = useHotels()
   const { page, pageSize, setPage, setPageSize, filters, setFilters } = useHotelStore()
   const createHotelMutation = useCreateHotel()
   const updateHotelMutation = useUpdateHotel()
+  const updateHotelExtensionMutation = useUpdateHotelExtension()
   const deleteHotelMutation = useDeleteHotel()
 
-  const handleSearch = (value: string) => {
-    setFilters({ ...filters, search: value })
-  }
+  const [isClientReady, setIsClientReady] = useState(false)
+  useEffect(() => {
+    setIsClientReady(true)
+  }, [])
 
-  const handleStatusFilter = (value: string) => {
-    setFilters({ ...filters, status: value })
+  const isLoading = !isClientReady || queryLoading
+
+  const handleSearch = (value: string) => {
+    setSearch(value)
   }
 
   const handleSubmit = async () => {
+    if (!name.trim()) {
+      toast({ title: '请输入酒店名称', variant: 'error' })
+      return
+    }
+    if (!address.trim()) {
+      toast({ title: '请输入地址', variant: 'error' })
+      return
+    }
     try {
-      const values = await form.validateFields()
+      const values = {
+        name: name, name_cn: name, name_en: nameEn,
+        address: address, address_cn: address,
+        city, country, star_rating: starRating, status: status as 'active' | 'inactive' | 'draft',
+        // Extension fields
+        check_in_time: checkInTime, check_out_time: checkOutTime,
+        cancellation_policy: cancellationPolicy, prepayment_policy: prepaymentPolicy,
+        kid_policy: kidPolicy, pet_policy: petPolicy,
+        services, facilities, description,
+        phone, email,
+      }
       if (editingHotel) {
         await updateHotelMutation.mutateAsync({ id: editingHotel.id, data: values })
-        message.success('Hotel updated successfully')
+        toast({ title: '酒店更新成功', variant: 'success' })
       } else {
         await createHotelMutation.mutateAsync(values)
-        message.success('Hotel created successfully')
+        toast({ title: '酒店创建成功', variant: 'success' })
       }
       setIsModalOpen(false)
-      form.resetFields()
-      setEditingHotel(null)
+      resetForm()
       refetch()
     } catch {
-      message.error('Operation failed')
+      toast({ title: '操作失败', variant: 'error' })
     }
   }
 
   const handleEdit = (hotel: Hotel) => {
     setEditingHotel(hotel)
-    form.setFieldsValue(hotel)
+    setName(hotel.name_cn)
+    setNameEn(hotel.name_en || '')
+    setAddress(hotel.address_cn)
+    setCity(hotel.city)
+    setCountry(hotel.country)
+    setStarRating(hotel.star_rating)
+    setStatus(hotel.status || 'draft')
+    setDescription(hotel.description || '')
+    setCancellationPolicy(hotel.cancellation_policy || '')
+    setPrepaymentPolicy(hotel.prepayment_policy || '')
+    setKidPolicy(hotel.kid_policy || '')
+    setPetPolicy(hotel.pet_policy || '')
+    setServices(hotel.services || '')
+    setFacilities(hotel.facilities || '')
+    setCheckInTime(hotel.check_in_time || '')
+    setCheckOutTime(hotel.check_out_time || '')
+    setPhone(hotel.phone || '')
+    setEmail(hotel.email || '')
     setIsModalOpen(true)
   }
 
   const handleDelete = async (id: number) => {
     try {
       await deleteHotelMutation.mutateAsync(id)
-      message.success('Hotel deleted successfully')
+      toast({ title: '酒店删除成功', variant: 'success' })
       refetch()
     } catch {
-      message.error('Delete failed')
+      toast({ title: '删除失败', variant: 'error' })
     }
+    setDeleteConfirmId(null)
   }
 
-  const columns: ColumnsType<Hotel> = [
+  const resetForm = () => {
+    setName('')
+    setNameEn('')
+    setAddress('')
+    setCity('')
+    setCountry('')
+    setStarRating(undefined)
+    setStatus('draft')
+    setEditingHotel(null)
+    setDescription('')
+    setCancellationPolicy('')
+    setPrepaymentPolicy('')
+    setKidPolicy('')
+    setPetPolicy('')
+    setServices('')
+    setFacilities('')
+    setCheckInTime('')
+    setCheckOutTime('')
+    setPhone('')
+    setEmail('')
+  }
+
+  const openAddModal = () => {
+    resetForm()
+    setIsModalOpen(true)
+  }
+
+  const columns = [
+    { key: 'id', title: 'ID' },
+    { key: 'name', title: '名称' },
+    { key: 'name_en', title: '英文名' },
+    { key: 'city', title: '城市' },
+    { key: 'country', title: '国家' },
+    { key: 'star_rating', title: '星级', render: (val: number) => val ? `${val} 星` : '-' },
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: 80,
-    },
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'English Name',
-      dataIndex: 'name_en',
-      key: 'name_en',
-    },
-    {
-      title: 'City',
-      dataIndex: 'city',
-      key: 'city',
-    },
-    {
-      title: 'Country',
-      dataIndex: 'country',
-      key: 'country',
-    },
-    {
-      title: 'Star Rating',
-      dataIndex: 'star_rating',
-      key: 'star_rating',
-      render: (rating: number) => rating ? `${rating} Star${rating > 1 ? 's' : ''}` : '-',
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
       key: 'status',
-      render: (status: string) => {
-        const colorMap: Record<string, string> = {
-          draft: 'default',
-          active: 'success',
-          inactive: 'error',
-        }
-        return <Tag color={colorMap[status]}>{status.toUpperCase()}</Tag>
+      title: '状态',
+      render: (val: string) => {
+        const variant = val === 'active' ? 'success' : val === 'inactive' ? 'error' : 'default'
+        const labels: Record<string, string> = { active: '启用', inactive: '停用', draft: '草稿' }
+        return <Badge variant={variant}>{labels[val] || val}</Badge>
       },
     },
     {
-      title: 'Actions',
       key: 'actions',
-      render: (_, record) => (
-        <Space>
-          <Button
-            type="link"
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-          />
-          <Popconfirm
-            title="Are you sure you want to delete this hotel?"
-            onConfirm={() => handleDelete(record.id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button type="link" danger icon={<DeleteOutlined />} />
-          </Popconfirm>
-        </Space>
+      title: '操作',
+      render: (_: any, record: Hotel) => (
+        <div className="flex gap-2">
+          <Button variant="ghost" size="sm" onClick={() => handleEdit(record)}>
+            编辑
+          </Button>
+          <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-600" onClick={() => setDeleteConfirmId(record.id)}>
+            删除
+          </Button>
+        </div>
       ),
     },
   ]
 
   return (
     <PageLayout>
+      <Toaster />
       <Card
-        title="Hotels"
-        extra={
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => {
-              setEditingHotel(null)
-              form.resetFields()
-              setIsModalOpen(true)
-            }}
-          >
-            Add Hotel
-          </Button>
-        }
+        title="酒店管理"
+        extra={<Button onClick={openAddModal}>添加酒店</Button>}
       >
-        <Space style={{ marginBottom: 16 }} wrap>
-          <Search
-            placeholder="Search hotels..."
-            onSearch={handleSearch}
-            style={{ width: 250 }}
-            allowClear
+        <div className="flex flex-wrap gap-4 mb-4">
+          <Input
+            placeholder="搜索酒店..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-64"
           />
-          <Select
-            placeholder="Filter by status"
-            style={{ width: 150 }}
-            allowClear
-            onChange={handleStatusFilter}
-            options={[
-              { label: 'Draft', value: 'draft' },
-              { label: 'Active', value: 'active' },
-              { label: 'Inactive', value: 'inactive' },
-            ]}
-          />
-        </Space>
-        <Table
+          <select
+            value={statusFilter || ''}
+            onChange={(e) => setStatusFilter(e.target.value || undefined)}
+            className="h-10 w-40 rounded-md border border-gray-200 px-3 text-sm"
+          >
+            <option value="">全部状态</option>
+            <option value="draft">草稿</option>
+            <option value="active">启用</option>
+            <option value="inactive">停用</option>
+          </select>
+        </div>
+        <DataTable
           columns={columns}
-          dataSource={hotels}
-          rowKey="id"
+          data={hotels}
           loading={isLoading}
+          rowKey="id"
           pagination={{
+            pageSize: pageSize,
             current: page,
-            pageSize,
             total,
-            showSizeChanger: true,
-            showTotal: (t) => `Total ${t} hotels`,
-            onChange: (p, ps) => {
-              setPage(p)
-              setPageSize(ps)
-            },
           }}
         />
       </Card>
 
-      <Modal
-        title={editingHotel ? 'Edit Hotel' : 'Add Hotel'}
-        open={isModalOpen}
-        onCancel={() => {
-          setIsModalOpen(false)
-          form.resetFields()
-          setEditingHotel(null)
-        }}
-        onOk={handleSubmit}
-        confirmLoading={createHotelMutation.isPending || updateHotelMutation.isPending}
-      >
-        <Form form={form} layout="vertical">
-          <Form.Item
-            name="name"
-            label="Hotel Name"
-            rules={[{ required: true, message: 'Please enter hotel name' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item name="name_en" label="English Name">
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="address"
-            label="Address"
-            rules={[{ required: true, message: 'Please enter address' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Space style={{ width: '100%' }} size="large">
-            <Form.Item
-              name="city"
-              label="City"
-              rules={[{ required: true, message: 'Please enter city' }]}
-              style={{ flex: 1 }}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="country"
-              label="Country"
-              rules={[{ required: true, message: 'Please enter country' }]}
-              style={{ flex: 1 }}
-            >
-              <Input />
-            </Form.Item>
-          </Space>
-          <Space style={{ width: '100%' }} size="large">
-            <Form.Item name="star_rating" label="Star Rating" style={{ flex: 1 }}>
-              <Select
-                allowClear
-                options={[
-                  { label: '1 Star', value: 1 },
-                  { label: '2 Stars', value: 2 },
-                  { label: '3 Stars', value: 3 },
-                  { label: '4 Stars', value: 4 },
-                  { label: '5 Stars', value: 5 },
-                ]}
-              />
-            </Form.Item>
-            <Form.Item name="status" label="Status" style={{ flex: 1 }}>
-              <Select
-                options={[
-                  { label: 'Draft', value: 'draft' },
-                  { label: 'Active', value: 'active' },
-                  { label: 'Inactive', value: 'inactive' },
-                ]}
-              />
-            </Form.Item>
-          </Space>
-        </Form>
-      </Modal>
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingHotel ? '编辑酒店' : '添加酒店'}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <label className="text-sm font-medium text-woye mb-1 block">酒店名称</label>
+              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="输入酒店名称" />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-woye mb-1 block">英文名称</label>
+              <Input value={nameEn} onChange={(e) => setNameEn(e.target.value)} placeholder="输入英文名称" />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-woye mb-1 block">地址</label>
+              <Input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="输入地址" />
+            </div>
+            <div className="flex gap-4">
+              <div className="flex-1">
+                <label className="text-sm font-medium text-woye mb-1 block">城市</label>
+                <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="城市" />
+              </div>
+              <div className="flex-1">
+                <label className="text-sm font-medium text-woye mb-1 block">国家</label>
+                <Input value={country} onChange={(e) => setCountry(e.target.value)} placeholder="国家" />
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div className="flex-1">
+                <label className="text-sm font-medium text-woye mb-1 block">星级</label>
+                <select
+                  value={starRating || ''}
+                  onChange={(e) => setStarRating(e.target.value ? Number(e.target.value) : undefined)}
+                  className="h-10 w-full rounded-md border border-gray-200 px-3 text-sm"
+                >
+                  <option value="">选择</option>
+                  <option value="1">1 星</option>
+                  <option value="2">2 星</option>
+                  <option value="3">3 星</option>
+                  <option value="4">4 星</option>
+                  <option value="5">5 星</option>
+                </select>
+              </div>
+              <div className="flex-1">
+                <label className="text-sm font-medium text-woye mb-1 block">状态</label>
+                <select
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                  className="h-10 w-full rounded-md border border-gray-200 px-3 text-sm"
+                >
+                  <option value="draft">草稿</option>
+                  <option value="active">启用</option>
+                  <option value="inactive">停用</option>
+                </select>
+              </div>
+            </div>
+            {/* Extension Fields */}
+            <div className="border-t pt-4 mt-4">
+              <h3 className="text-sm font-medium text-woye mb-3">扩展信息</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-woye mb-1 block">入住时间</label>
+                  <Input value={checkInTime} onChange={(e) => setCheckInTime(e.target.value)} placeholder="14:00" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-woye mb-1 block">退房时间</label>
+                  <Input value={checkOutTime} onChange={(e) => setCheckOutTime(e.target.value)} placeholder="12:00" />
+                </div>
+              </div>
+              <div className="mt-3">
+                <label className="text-sm font-medium text-woye mb-1 block">取消政策</label>
+                <Input value={cancellationPolicy} onChange={(e) => setCancellationPolicy(e.target.value)} placeholder="免费取消政策" />
+              </div>
+              <div className="mt-3">
+                <label className="text-sm font-medium text-woye mb-1 block">预付款政策</label>
+                <Input value={prepaymentPolicy} onChange={(e) => setPrepaymentPolicy(e.target.value)} placeholder="预付款要求" />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mt-3">
+                <div>
+                  <label className="text-sm font-medium text-woye mb-1 block">儿童政策</label>
+                  <Input value={kidPolicy} onChange={(e) => setKidPolicy(e.target.value)} placeholder="儿童入住政策" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-woye mb-1 block">宠物政策</label>
+                  <Input value={petPolicy} onChange={(e) => setPetPolicy(e.target.value)} placeholder="宠物入住政策" />
+                </div>
+              </div>
+              <div className="mt-3">
+                <label className="text-sm font-medium text-woye mb-1 block">服务设施</label>
+                <Input value={services} onChange={(e) => setServices(e.target.value)} placeholder="酒店服务设施描述" />
+              </div>
+              <div className="mt-3">
+                <label className="text-sm font-medium text-woye mb-1 block">设施详情</label>
+                <Input value={facilities} onChange={(e) => setFacilities(e.target.value)} placeholder="详细设施列表" />
+              </div>
+              <div className="mt-3">
+                <label className="text-sm font-medium text-woye mb-1 block">酒店描述</label>
+                <Input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="酒店描述" />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mt-3">
+                <div>
+                  <label className="text-sm font-medium text-woye mb-1 block">联系电话</label>
+                  <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+86-21-xxxx" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-woye mb-1 block">邮箱</label>
+                  <Input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="info@hotel.com" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsModalOpen(false)}>取消</Button>
+            <Button onClick={handleSubmit} loading={createHotelMutation.isPending || updateHotelMutation.isPending || updateHotelExtensionMutation.isPending}>
+              {editingHotel ? '更新' : '创建'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={deleteConfirmId !== null} onOpenChange={() => setDeleteConfirmId(null)}>
+        <AlertDialogContent>
+          <AlertDialogTitle>删除酒店</AlertDialogTitle>
+          <AlertDialogDescription>
+            确定要删除这家酒店吗？此操作无法撤销。
+          </AlertDialogDescription>
+          <AlertDialogFooter>
+            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogAction onClick={() => deleteConfirmId && handleDelete(deleteConfirmId)}>
+              删除
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </PageLayout>
   )
 }
