@@ -3,34 +3,45 @@ import apiClient from '@/api/client'
 import { useHotelStore } from '@/stores/hotelStore'
 import { isAnonymousEnabled } from '@/services/asso/config'
 
+// Hotel status enum matching backend HotelStatus
+export type HotelStatus = 'draft' | 'pending_review' | 'approved' | 'published' | 'suspended'
+
 export interface Hotel {
-  id: number
+  id: string
   name_cn: string
   name_en?: string
-  address_cn: string
+  brand?: string
+  status: HotelStatus
+  country_code: string
+  province: string
   city: string
-  country: string
-  star_rating?: number
-  status: 'draft' | 'active' | 'inactive'
-  created_at: string
-  updated_at: string
-  // Extension fields
-  description?: string
-  description_cn?: string
+  district?: string
+  address_cn: string
+  address_en?: string
+  postal_code?: string
+  phone?: string
+  email?: string
+  website?: string
+  latitude?: number
+  longitude?: number
+  expedia_hotel_id?: string
+  expedia_chain_code?: string
+  expedia_property_code?: string
+  check_in_time?: string
+  check_out_time?: string
   cancellation_policy?: string
-  cancellation_policy_cn?: string
   prepayment_policy?: string
-  prepayment_policy_cn?: string
   kid_policy?: string
   pet_policy?: string
   services?: string
-  services_cn?: string
   facilities?: string
-  facilities_cn?: string
-  check_in_time?: string
-  check_out_time?: string
-  phone?: string
-  email?: string
+  description?: string
+  review_score?: number
+  review_count?: number
+  opened_at?: string
+  renovated_at?: string
+  created_at: string
+  updated_at: string
 }
 
 export interface HotelExtensionUpdate {
@@ -93,7 +104,7 @@ export function useHotels() {
   }
 }
 
-export function useHotel(id: number) {
+export function useHotel(id: string) {
   return useQuery({
     queryKey: ['hotel', id],
     queryFn: async () => {
@@ -120,7 +131,7 @@ export function useCreateHotel() {
 export function useUpdateHotel() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<Hotel> }) => {
+    mutationFn: async ({ id, data }: { id: string; data: Partial<Hotel> }) => {
       const response = await apiClient.put(`/hotels/${id}`, data)
       return response.data.data as Hotel
     },
@@ -134,7 +145,7 @@ export function useUpdateHotel() {
 export function useDeleteHotel() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (id: string) => {
       await apiClient.delete(`/hotels/${id}`)
     },
     onSuccess: () => {
@@ -157,7 +168,7 @@ export function useSearchHotels(query: string) {
 export function useUpdateHotelExtension() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({ hotelId, data }: { hotelId: number; data: HotelExtensionUpdate }) => {
+    mutationFn: async ({ hotelId, data }: { hotelId: string; data: HotelExtensionUpdate }) => {
       const response = await apiClient.put(`/hotels/${hotelId}/extension`, data)
       return response.data.data as Hotel
     },

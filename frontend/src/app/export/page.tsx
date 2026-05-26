@@ -1,21 +1,21 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { DataTable } from '@/components/ui/data-table'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Spinner } from '@/components/ui/spinner'
 import {
-  Card,
-  Table,
-  Button,
-  Space,
-  Select,
-  Tag,
-  Modal,
-  Form,
-  message,
-  Progress,
-  Checkbox,
-} from 'antd'
-import { DownloadOutlined, FileExcelOutlined, FileTextOutlined } from '@ant-design/icons'
-import type { ColumnsType } from 'antd/es/table'
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog'
+import { useToast, Toaster } from '@/components/ui/use-toast'
 import PageLayout from '@/components/Layout/PageLayout'
 import { useExports, useExportHotels, useExportRooms, ExportRecord } from '@/hooks/useExport'
 import { useHotels } from '@/hooks/useHotels'
@@ -24,36 +24,40 @@ import dayjs from 'dayjs'
 export default function ExportPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [exportType, setExportType] = useState<'hotels' | 'rooms'>('hotels')
-  const [selectedHotelIds, setSelectedHotelIds] = useState<number[]>([])
-  const [form] = Form.useForm()
-  const { exports: exportList, isLoading, refetch } = useExports()
+  const [selectedHotelIds, setSelectedHotelIds] = useState<string[]>([])
+  const [format, setFormat] = useState('xlsx')
+  const { toast } = useToast()
+  const { exports: exportList, isLoading: queryLoading, refetch } = useExports()
   const { hotels = [] } = useHotels()
   const exportHotelsMutation = useExportHotels()
   const exportRoomsMutation = useExportRooms()
 
+  const [isClientLoading, setIsClientLoading] = useState(true)
+  useEffect(() => {
+    setIsClientLoading(false)
+  }, [])
+
+  const isLoading = queryLoading || isClientLoading
+
   const handleExport = async () => {
     try {
-      const values = await form.validateFields()
-      const format = values.format || 'xlsx'
-
       if (exportType === 'hotels') {
         await exportHotelsMutation.mutateAsync({
           hotelIds: selectedHotelIds,
-          format,
+          format: format as 'xlsx' | 'csv',
         })
       } else {
         await exportRoomsMutation.mutateAsync({
           hotelIds: selectedHotelIds,
-          format,
+          format: format as 'xlsx' | 'csv',
         })
       }
-      message.success('Export job created successfully')
+      toast({ title: '导出任务创建成功', variant: 'success' })
       setIsModalOpen(false)
-      form.resetFields()
       setSelectedHotelIds([])
       refetch()
     } catch {
-      message.error('Export failed')
+      toast({ title: '导出失败', variant: 'error' })
     }
   }
 
@@ -72,144 +76,126 @@ export default function ExportPage() {
       a.click()
       window.URL.revokeObjectURL(url)
     } catch {
-      message.error('Download failed')
+      toast({ title: '下载失败', variant: 'error' })
     }
   }
 
-  const columns: ColumnsType<ExportRecord> = [
+  const columns = [
     {
-      title: 'Type',
-      dataIndex: 'type',
       key: 'type',
-      render: (type: string) => (
-        <Tag color={type === 'hotels' ? 'blue' : 'green'}>
-          {type.toUpperCase()}
-        </Tag>
+      title: '类型',
+      render: (val: string) => (
+        <Badge variant={val === 'hotels' ? 'info' : 'success'}>{val === 'hotels' ? '酒店' : '房间'}</Badge>
       ),
     },
     {
-      title: 'Format',
-      dataIndex: 'format',
       key: 'format',
-      render: (format: string) =>
-        format === 'xlsx' ? (
-          <FileExcelOutlined style={{ color: '#52c41a' }} />
-        ) : (
-          <FileTextOutlined style={{ color: '#1890ff' }} />
-        ),
+      title: '格式',
+      render: (val: string) => (val === 'xlsx' ? 'Excel' : 'CSV'),
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
       key: 'status',
-      render: (status: string) => {
-        const colorMap: Record<string, string> = {
-          pending: 'default',
-          processing: 'processing',
-          completed: 'success',
-          failed: 'error',
-        }
-        return <Tag color={colorMap[status]}>{status.toUpperCase()}</Tag>
+      title: '状态',
+      render: (val: string) => {
+        const variant = val === 'completed' ? 'success' : val === 'failed' ? 'error' : val === 'processing' ? 'warning' : 'default'
+        const labels: Record<string, string> = { completed: '已完成', failed: '失败', processing: '处理中', pending: '等待中' }
+        return <Badge variant={variant}>{labels[val] || val}</Badge>
       },
     },
+    { key: 'filename', title: '文件名' },
     {
-      title: 'Filename',
-      dataIndex: 'filename',
-      key: 'filename',
-    },
-    {
-      title: 'Created',
-      dataIndex: 'created_at',
       key: 'created_at',
-      render: (date: string) => dayjs(date).format('YYYY-MM-DD HH:mm'),
+      title: '创建时间',
+      render: (val: string) => dayjs(val).format('YYYY-MM-DD HH:mm'),
     },
     {
-      title: 'Actions',
       key: 'actions',
-      render: (_, record) =>
+      title: '操作',
+      render: (_: any, record: ExportRecord) =>
         record.status === 'completed' && (
-          <Button
-            type="primary"
-            icon={<DownloadOutlined />}
-            onClick={() => handleDownload(record)}
-          >
-            Download
-          </Button>
+          <Button onClick={() => handleDownload(record)}>下载</Button>
         ),
     },
   ]
 
   return (
     <PageLayout>
+      <Toaster />
       <Card
-        title="Export Center"
+        title="导出中心"
         extra={
-          <Button
-            type="primary"
-            icon={<DownloadOutlined />}
-            onClick={() => setIsModalOpen(true)}
-          >
-            New Export
-          </Button>
+          <Button onClick={() => setIsModalOpen(true)}>新建导出</Button>
         }
       >
-        <Table
-          columns={columns}
-          dataSource={exportList}
-          rowKey="id"
-          loading={isLoading}
-          pagination={{ pageSize: 10 }}
-        />
+        {isLoading ? (
+          <div className="flex justify-center py-12"><Spinner size="lg" /></div>
+        ) : (
+          <DataTable
+            columns={columns}
+            data={exportList}
+            rowKey="id"
+            pagination={{ pageSize: 10 }}
+          />
+        )}
       </Card>
 
-      <Modal
-        title="Create Export"
-        open={isModalOpen}
-        onCancel={() => {
-          setIsModalOpen(false)
-          form.resetFields()
-          setSelectedHotelIds([])
-        }}
-        onOk={handleExport}
-        confirmLoading={exportHotelsMutation.isPending || exportRoomsMutation.isPending}
-        width={600}
-      >
-        <Form form={form} layout="vertical">
-          <Form.Item
-            name="type"
-            label="Export Type"
-            rules={[{ required: true, message: 'Please select export type' }]}
-          >
-            <Select
-              options={[
-                { label: 'Hotels', value: 'hotels' },
-                { label: 'Rooms', value: 'rooms' },
-              ]}
-              onChange={(value) => setExportType(value)}
-            />
-          </Form.Item>
-          <Form.Item
-            name="format"
-            label="Format"
-            rules={[{ required: true, message: 'Please select format' }]}
-          >
-            <Select
-              options={[
-                { label: 'Excel (.xlsx)', value: 'xlsx' },
-                { label: 'CSV (.csv)', value: 'csv' },
-              ]}
-            />
-          </Form.Item>
-          <Form.Item label="Select Hotels">
-            <Checkbox.Group
-              options={hotels.map((h) => ({ label: h.name, value: h.id }))}
-              value={selectedHotelIds}
-              onChange={(values) => setSelectedHotelIds(values as number[])}
-              style={{ width: '100%' }}
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-xl">
+          <DialogHeader>
+            <DialogTitle>创建导出任务</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <label className="text-sm font-medium text-woye mb-2 block">导出类型</label>
+              <select
+                value={exportType}
+                onChange={(e) => setExportType(e.target.value as 'hotels' | 'rooms')}
+                className="h-10 w-full rounded-md border border-gray-200 px-3 text-sm"
+              >
+                <option value="hotels">酒店</option>
+                <option value="rooms">房间</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-woye mb-2 block">文件格式</label>
+              <select
+                value={format}
+                onChange={(e) => setFormat(e.target.value)}
+                className="h-10 w-full rounded-md border border-gray-200 px-3 text-sm"
+              >
+                <option value="xlsx">Excel (.xlsx)</option>
+                <option value="csv">CSV (.csv)</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-woye mb-2 block">选择酒店</label>
+              <div className="max-h-48 overflow-y-auto space-y-2 border rounded-md p-3">
+                {hotels.map((h) => (
+                  <label key={h.id} className="flex items-center gap-2 cursor-pointer">
+                    <Checkbox
+                      checked={selectedHotelIds.includes(h.id)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setSelectedHotelIds([...selectedHotelIds, h.id])
+                        } else {
+                          setSelectedHotelIds(selectedHotelIds.filter((id) => id !== h.id))
+                        }
+                      }}
+                    />
+                    <span className="text-sm">{h.name_cn}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsModalOpen(false)}>取消</Button>
+            <Button onClick={handleExport} loading={exportHotelsMutation.isPending || exportRoomsMutation.isPending}>
+              创建导出
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </PageLayout>
   )
 }
