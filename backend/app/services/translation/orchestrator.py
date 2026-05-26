@@ -13,11 +13,13 @@ The orchestrator coordinates the complete translation workflow:
 7. Return the final translation
 """
 
+import re
 import time
 from typing import Any, Dict, List, Optional, Tuple
 
 from loguru import logger
 
+from app.core.database import get_db
 from app.schemas.translation import (
     BatchTranslationResult,
     TranslationResult,
@@ -56,6 +58,133 @@ class TranslationOrchestrator:
         self.tencent_client = tencent_client or get_tencent_client()
         self.ai_client = ai_client or get_deepseek_client()
         self.cache_service = cache_service or get_cache_service()
+        self._glossary_service = None
+        self._booking_reference_service = None
+
+    @property
+    def glossary_service(self):
+        """Lazy load glossary service."""
+        if self._glossary_service is None:
+            from app.services.glossary import glossary
+            self._glossary_service = glossary
+        return self._glossary_service
+
+    @property
+    def booking_reference_service(self):
+        """Lazy load booking reference service."""
+        if self._booking_reference_service is None:
+            from app.services.booking_reference_service import booking_reference
+            self._booking_reference_service = booking_reference
+        return self._booking_reference_service
+
+    async def _apply_terminology_replacements(
+        self,
+        text: str,
+        db,  # AsyncSession passed directly
+        source_lang: str,
+        target_lang: str,
+    ) -> Tuple[str, List[Dict[str, Any]]]:
+        """
+        Apply terminology replacements from glossary.
+
+        Args:
+            text: Text to process
+            db: Database session
+            source_lang: Source language code
+            target_lang: Target language code
+
+        Returns:
+            Tuple of (processed_text, list of replacements applied)
+        """
+        # Get all active terms for this language pair
+        terms = await self.glossary_service.get_active_terms(
+            db, source_lang=source_lang, target_lang=target_lang
+        )
+
+        if not terms:
+            return text, []
+
+        replacements = []
+        processed = text
+
+        # Sort by term length descending to handle longer terms first
+        # This prevents partial replacements (e.g., "高级大床房" before "大床")
+        sorted_terms = sorted(terms, key=lambda t: len(t.term), reverse=True)
+
+        for term in sorted_terms:
+            if term.term in processed:
+                replacement = term.translation
+                processed = processed.replace(term.term, replacement)
+                replacements.append({
+                    "term": term.term,
+                    "translation": replacement,
+                    "category": term.category.value if term.category else None,
+                })
+                logger.debug(
+                    f"Terminology replacement applied",
+                    extra={"term": term.term, "translation": replacement},
+                )
+
+        return processed, replacements
+
+    async def _query_reference_library(
+        self,
+        text: str,
+        db,  # AsyncSession passed directly
+        source_lang: str,
+        target_lang: str,
+    ) -> Optional[Dict[str, Any]]:
+        """
+        Query reference library for similar translations.
+
+        Args:
+            text: Text to look up
+            db: Database session
+            source_lang: Source language code
+            target_lang: Target language code
+
+        Returns:
+            Reference data with ctrip_translation and booking_translation if found
+        """
+        # First try exact match
+        ref = await self.booking_reference_service.find_by_source_text(
+            db,
+            source_text=text,
+            source_lang=source_lang,
+            target_lang=target_lang,
+        )
+
+        if ref:
+            await self.booking_reference_service.increment_usage(db, id=ref.id)
+            return {
+                "source": "exact_match",
+                "ctrip_translation": ref.ctrip_translation,
+                "booking_translation": ref.booking_translation,
+                "hotel_name": ref.hotel_name,
+            }
+
+        # Try similar matches
+        similar_refs = await self.booking_reference_service.find_similar(
+            db,
+            source_text=text,
+            source_lang=source_lang,
+            target_lang=target_lang,
+            limit=3,
+        )
+
+        if similar_refs:
+            # Return the most relevant similar reference
+            best_ref = similar_refs[0]
+            await self.booking_reference_service.increment_usage(db, id=best_ref.id)
+            return {
+                "source": "similar_match",
+                "ctrip_translation": best_ref.ctrip_translation,
+                "booking_translation": best_ref.booking_translation,
+                "hotel_name": best_ref.hotel_name,
+                "similarity_text": best_ref.source_text,
+            }
+
+        return None
 
     async def translate(
         self,
@@ -65,6 +194,7 @@ class TranslationOrchestrator:
         use_cache: bool = True,
         use_ai_enhance: bool = True,
         context: Optional[str] = None,
+        db=None,  # Optional AsyncSession for terminology/reference lookup
     ) -> TranslationResult:
         """
         Translate a single text through the complete workflow.
@@ -118,12 +248,36 @@ class TranslationOrchestrator:
                 cached=True,
             )
 
-        # Step 2: TODO - Query terminology database for replacements
-        # This will be implemented when terminology module is ready
+        # Step 2: Query terminology database for replacements
         processed_text = original_text
+        terminology_matches = []
+        if db:
+            try:
+                processed_text, terminology_matches = await self._apply_terminology_replacements(
+                    original_text, db, source_lang, target_lang
+                )
+                if terminology_matches:
+                    logger.debug(
+                        f"Applied {len(terminology_matches)} terminology replacements",
+                        extra={"matches": [m["term"] for m in terminology_matches]},
+                    )
+            except Exception as e:
+                logger.warning(f"Terminology lookup failed: {e}")
 
-        # Step 3: TODO - Query reference library for similar translations
-        # This will be implemented when reference module is ready
+        # Step 3: Query reference library for similar translations
+        reference_data = None
+        if db:
+            try:
+                reference_data = await self._query_reference_library(
+                    original_text, db, source_lang, target_lang
+                )
+                if reference_data:
+                    logger.debug(
+                        f"Found reference data",
+                        extra={"source": reference_data.get("source"), "hotel": reference_data.get("hotel_name")},
+                    )
+            except Exception as e:
+                logger.warning(f"Reference library lookup failed: {e}")
 
         # Step 4: Call machine translation
         try:
@@ -150,12 +304,23 @@ class TranslationOrchestrator:
         # Step 5: Apply AI enhancement (optional)
         if use_ai_enhance and translated_text:
             try:
+                # Build context from reference data for AI enhancement
+                enhancement_context = context or ""
+                if reference_data:
+                    ref_parts = []
+                    if reference_data.get("ctrip_translation"):
+                        ref_parts.append(f"Ctrip参考: {reference_data['ctrip_translation']}")
+                    if reference_data.get("booking_translation"):
+                        ref_parts.append(f"Booking参考: {reference_data['booking_translation']}")
+                    if ref_parts:
+                        enhancement_context = f"{enhancement_context}\n\n参考翻译:\n" + "\n".join(ref_parts)
+
                 ai_result = await self.ai_client.enhance_translation(
                     original_text=original_text,
                     machine_translation=translated_text,
                     source_lang=source_lang,
                     target_lang=target_lang,
-                    context=context,
+                    context=enhancement_context,
                 )
                 enhanced_text = ai_result.get("enhanced_text", translated_text)
                 if enhanced_text and enhanced_text != translated_text:
@@ -205,6 +370,8 @@ class TranslationOrchestrator:
             target_lang=target_lang,
             source=source,
             cached=False,
+            booking_reference=reference_data.get("booking_translation") if reference_data else None,
+            ctrip_reference=reference_data.get("ctrip_translation") if reference_data else None,
         )
 
     async def batch_translate(

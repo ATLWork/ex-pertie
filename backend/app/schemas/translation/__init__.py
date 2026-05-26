@@ -78,6 +78,8 @@ class TranslationResult(BaseModel):
     source: TranslationSource = Field(..., description="Translation source")
     confidence: Optional[float] = Field(default=None, ge=0, le=1, description="Confidence score")
     cached: bool = Field(default=False, description="Whether result is from cache")
+    booking_reference: Optional[str] = Field(default=None, description="Booking reference translation")
+    ctrip_reference: Optional[str] = Field(default=None, description="Ctrip reference translation")
 
 
 class BatchTranslationResult(BaseModel):
