@@ -5,7 +5,7 @@ CRUD service for TranslationHistory model.
 from datetime import datetime
 from typing import List, Optional
 
-from sqlalchemy import Integer, and_, func, case
+from sqlalchemy import Integer, and_, func, case, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -303,6 +303,141 @@ class CRUDTranslationHistory(CRUDBase[TranslationHistory, TranslationHistoryCrea
 
         await db.flush()
         return len(old_records)
+
+    async def get_pending_reviews(
+        self,
+        db: AsyncSession,
+        *,
+        source_lang: Optional[str] = None,
+        target_lang: Optional[str] = None,
+        search: Optional[str] = None,
+        skip: int = 0,
+        limit: int = 20,
+    ) -> tuple:
+        """
+        Get translations pending review.
+
+        Args:
+            db: Database session
+            source_lang: Optional source language filter
+            target_lang: Optional target language filter
+            search: Search in source or translated text
+            skip: Number of records to skip
+            limit: Maximum records to return
+
+        Returns:
+            Tuple of (list of records, total count)
+        """
+        from app.models.translation import ReviewStatus
+
+        query = select(TranslationHistory).where(
+            TranslationHistory.review_status == ReviewStatus.PENDING
+        )
+
+        if source_lang:
+            query = query.where(TranslationHistory.source_lang == source_lang)
+        if target_lang:
+            query = query.where(TranslationHistory.target_lang == target_lang)
+        if search:
+            query = query.where(
+                or_(
+                    TranslationHistory.source_text.ilike(f"%{search}%"),
+                    TranslationHistory.translated_text.ilike(f"%{search}%"),
+                )
+            )
+
+        # Count total
+        count_query = select(func.count()).select_from(TranslationHistory).where(
+            TranslationHistory.review_status == ReviewStatus.PENDING
+        )
+        if source_lang:
+            count_query = count_query.where(TranslationHistory.source_lang == source_lang)
+        if target_lang:
+            count_query = count_query.where(TranslationHistory.target_lang == target_lang)
+        if search:
+            count_query = count_query.where(
+                or_(
+                    TranslationHistory.source_text.ilike(f"%{search}%"),
+                    TranslationHistory.translated_text.ilike(f"%{search}%"),
+                )
+            )
+        count_result = await db.execute(count_query)
+        total = count_result.scalar_one()
+
+        # Get records
+        query = query.order_by(TranslationHistory.created_at.desc())
+        query = query.offset(skip).limit(limit)
+
+        result = await db.execute(query)
+        records = list(result.scalars().all())
+
+        return records, total
+
+    async def get_by_review_status(
+        self,
+        db: AsyncSession,
+        *,
+        status: "ReviewStatus",
+        skip: int = 0,
+        limit: int = 20,
+    ) -> tuple:
+        """
+        Get translations by review status.
+
+        Args:
+            db: Database session
+            status: Review status
+            skip: Number of records to skip
+            limit: Maximum records to return
+
+        Returns:
+            Tuple of (list of records, total count)
+        """
+        query = select(TranslationHistory).where(
+            TranslationHistory.review_status == status
+        )
+
+        # Count total
+        count_query = select(func.count()).select_from(TranslationHistory).where(
+            TranslationHistory.review_status == status
+        )
+        count_result = await db.execute(count_query)
+        total = count_result.scalar_one()
+
+        # Get records
+        query = query.order_by(TranslationHistory.created_at.desc())
+        query = query.offset(skip).limit(limit)
+
+        result = await db.execute(query)
+        records = list(result.scalars().all())
+
+        return records, total
+
+    async def get_review_stats(
+        self,
+        db: AsyncSession,
+    ) -> dict:
+        """
+        Get review statistics.
+
+        Args:
+            db: Database session
+
+        Returns:
+            Dictionary with counts by status
+        """
+        from app.models.translation import ReviewStatus
+
+        stats = {}
+
+        for status in ReviewStatus:
+            count_query = select(func.count()).select_from(TranslationHistory).where(
+                TranslationHistory.review_status == status
+            )
+            count_result = await db.execute(count_query)
+            stats[status.value] = count_result.scalar_one()
+
+        return stats
 
 
 # Global instance

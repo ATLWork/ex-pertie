@@ -4,7 +4,7 @@ Translation Rule API endpoints.
 
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, File, HTTPException, Path, Query, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
@@ -17,9 +17,13 @@ from app.schemas.translation import (
     TranslationRuleQuery,
 )
 from app.services.translation_rule import translation_rule
+from app.services.translation_rule_parser import get_rule_parser
 from app.middleware.exception import NotFoundError, BadRequestError
 
 router = APIRouter()
+
+
+# ============== Routes WITHOUT path parameters (must come first) ==============
 
 
 @router.get("", response_model=PagedResponse[TranslationRuleResponse])
@@ -122,6 +126,203 @@ async def get_active_rules(
         message="success",
         data=[TranslationRuleResponse.model_validate(rule) for rule in rules],
     )
+
+
+# ============== PDF Import Endpoints ==============
+
+
+@router.post(
+    "/parse-pdf",
+    response_model=ApiResponse[dict],
+    summary="Parse PDF and generate translation rules",
+    description="Upload a PDF document containing translation rules, parse it using AI, and generate structured rules.",
+)
+async def parse_pdf_rules(
+    file: UploadFile = File(..., description="PDF file containing translation rules"),
+    use_ai: bool = Query(True, description="Whether to use AI for parsing (disable for faster fallback parsing)"),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Parse a PDF document and generate structured translation rules.
+
+    - **file**: PDF file containing translation rules (e.g., SOP document)
+    - **use_ai**: Whether to use AI for intelligent parsing (default: True)
+
+    The PDF content will be analyzed and translated into structured rules
+    that can be stored and used during translation operations.
+    """
+    if not file.filename:
+        raise BadRequestError(message="No file provided")
+
+    # Validate file extension
+    file_ext = file.filename.lower().split(".")[-1] if "." in file.filename else ""
+    if file_ext != "pdf":
+        raise BadRequestError(
+            message="Invalid file format",
+            details={"supported_formats": [".pdf"]},
+        )
+
+    # Read file content
+    content = await file.read()
+    if not content:
+        raise BadRequestError(message="Empty file provided")
+
+    # Parse PDF
+    parser = get_rule_parser()
+    try:
+        result = await parser.parse_pdf(
+            pdf_content=content,
+            source_filename=file.filename,
+            use_ai=use_ai,
+        )
+
+        if not result.get("success"):
+            raise BadRequestError(
+                message="Failed to parse PDF",
+                details={"error": result.get("error", "Unknown error")},
+            )
+
+        return ApiResponse(
+            code=200,
+            message=f"Successfully parsed {result.get('rules_count', 0)} rules from PDF",
+            data={
+                "rules_count": result.get("rules_count", 0),
+                "rules": result.get("rules", []),
+                "summary": result.get("summary", ""),
+                "document_type": result.get("document_type", ""),
+                "warning": result.get("warning"),
+            },
+        )
+
+    except ImportError as e:
+        raise BadRequestError(
+            message="PDF parsing library not available",
+            details={"error": str(e)},
+        )
+    except Exception as e:
+        raise BadRequestError(
+            message="Failed to parse PDF",
+            details={"error": str(e)},
+        )
+
+
+@router.post(
+    "/import-pdf",
+    response_model=ApiResponse[dict],
+    summary="Import translation rules from PDF",
+    description="Upload a PDF document, parse it, and save the generated rules to database.",
+)
+async def import_pdf_rules(
+    file: UploadFile = File(..., description="PDF file containing translation rules"),
+    use_ai: bool = Query(True, description="Whether to use AI for parsing"),
+    overwrite: bool = Query(False, description="Whether to overwrite existing rules with same name prefix"),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Import translation rules from a PDF document.
+
+    - **file**: PDF file containing translation rules
+    - **use_ai**: Whether to use AI for intelligent parsing (default: True)
+    - **overwrite**: Whether to overwrite existing rules with the same source prefix
+
+    This endpoint parses the PDF and saves the generated rules directly
+    to the database.
+    """
+    if not file.filename:
+        raise BadRequestError(message="No file provided")
+
+    file_ext = file.filename.lower().split(".")[-1] if "." in file.filename else ""
+    if file_ext != "pdf":
+        raise BadRequestError(
+            message="Invalid file format",
+            details={"supported_formats": [".pdf"]},
+        )
+
+    content = await file.read()
+    if not content:
+        raise BadRequestError(message="Empty file provided")
+
+    parser = get_rule_parser()
+    try:
+        result = await parser.parse_pdf(
+            pdf_content=content,
+            source_filename=file.filename,
+            use_ai=use_ai,
+        )
+
+        if not result.get("success"):
+            raise BadRequestError(
+                message="Failed to parse PDF",
+                details={"error": result.get("error", "Unknown error")},
+            )
+
+        rules = result.get("rules", [])
+        imported_count = 0
+        skipped_count = 0
+        errors = []
+
+        for rule_data in rules:
+            try:
+                # Check if rule with similar name exists
+                rule_name = rule_data.get("name", "")
+                existing = await translation_rule.get_by_name(db, name=rule_name)
+
+                if existing:
+                    if overwrite:
+                        # Update existing rule
+                        rule_update = TranslationRuleUpdate(
+                            rule_value=rule_data.get("rule_value", "{}"),
+                            is_active=rule_data.get("is_active", True),
+                        )
+                        await translation_rule.update(db, db_obj=existing, obj_in=rule_update)
+                        imported_count += 1
+                    else:
+                        skipped_count += 1
+                        continue
+
+                # Create new rule
+                rule_create = TranslationRuleCreate(
+                    name=rule_data.get("name", ""),
+                    source_lang=rule_data.get("source_lang", "zh"),
+                    target_lang=rule_data.get("target_lang", "en"),
+                    field_name=rule_data.get("field_name", "general"),
+                    rule_type=rule_data.get("rule_type", "direct"),
+                    rule_value=rule_data.get("rule_value", "{}"),
+                    is_active=rule_data.get("is_active", True),
+                )
+                await translation_rule.create(db, obj_in=rule_create)
+                imported_count += 1
+
+            except Exception as e:
+                errors.append({"rule": rule_data.get("name", ""), "error": str(e)})
+
+        await db.commit()
+
+        return ApiResponse(
+            code=200 if not errors else 207,
+            message=f"Imported {imported_count} rules, skipped {skipped_count}, {len(errors)} errors",
+            data={
+                "imported_count": imported_count,
+                "skipped_count": skipped_count,
+                "error_count": len(errors),
+                "errors": errors,
+                "summary": result.get("summary", ""),
+            },
+        )
+
+    except ImportError as e:
+        raise BadRequestError(
+            message="PDF parsing library not available",
+            details={"error": str(e)},
+        )
+    except Exception as e:
+        raise BadRequestError(
+            message="Failed to import rules from PDF",
+            details={"error": str(e)},
+        )
+
+
+# ============== Routes WITH path parameters (must come last) ==============
 
 
 @router.get("/{rule_id}", response_model=ApiResponse[TranslationRuleResponse])

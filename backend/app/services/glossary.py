@@ -8,7 +8,7 @@ from sqlalchemy import and_, func, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from app.models.translation import Glossary, GlossaryCategory
+from app.models.translation import Glossary, GlossaryCategory, GlossaryReviewStatus
 from app.schemas.translation import (
     GlossaryCreate,
     GlossaryUpdate,
@@ -335,6 +335,122 @@ class CRUDGlossary(CRUDBase[Glossary, GlossaryCreate, GlossaryUpdate]):
 
         result = await db.execute(query)
         return {row.category.value: row.count for row in result.all()}
+
+    async def get_pending_reviews(
+        self,
+        db: AsyncSession,
+        *,
+        source_lang: Optional[str] = None,
+        target_lang: Optional[str] = None,
+        category: Optional[GlossaryCategory] = None,
+        search: Optional[str] = None,
+        skip: int = 0,
+        limit: int = 100,
+    ) -> tuple[List[Glossary], int]:
+        """
+        Get glossary entries pending review.
+
+        Args:
+            db: Database session
+            source_lang: Optional source language filter
+            target_lang: Optional target language filter
+            category: Optional category filter
+            search: Optional search term
+            skip: Number of records to skip
+            limit: Maximum records to return
+
+        Returns:
+            Tuple of (list of Glossary entries, total count)
+        """
+        query = select(Glossary).where(Glossary.review_status == GlossaryReviewStatus.PENDING)
+
+        if source_lang:
+            query = query.where(Glossary.source_lang == source_lang)
+        if target_lang:
+            query = query.where(Glossary.target_lang == target_lang)
+        if category:
+            query = query.where(Glossary.category == category)
+        if search:
+            search_term = f"%{search}%"
+            query = query.where(
+                or_(
+                    Glossary.term.ilike(search_term),
+                    Glossary.translation.ilike(search_term),
+                )
+            )
+
+        # Count query
+        count_query = select(func.count()).select_from(query.subquery())
+        count_result = await db.execute(count_query)
+        total = count_result.scalar()
+
+        # Main query with pagination
+        query = query.order_by(Glossary.updated_at.desc())
+        query = query.offset(skip).limit(limit)
+        result = await db.execute(query)
+        items = list(result.scalars().all())
+
+        return items, total
+
+    async def get_by_review_status(
+        self,
+        db: AsyncSession,
+        *,
+        status: GlossaryReviewStatus,
+        skip: int = 0,
+        limit: int = 100,
+    ) -> tuple[List[Glossary], int]:
+        """
+        Get glossary entries by review status.
+
+        Args:
+            db: Database session
+            status: Review status to filter by
+            skip: Number of records to skip
+            limit: Maximum records to return
+
+        Returns:
+            Tuple of (list of Glossary entries, total count)
+        """
+        query = select(Glossary).where(Glossary.review_status == status)
+
+        # Count query
+        count_query = select(func.count()).select_from(query.subquery())
+        count_result = await db.execute(count_query)
+        total = count_result.scalar()
+
+        # Main query with pagination
+        query = query.order_by(Glossary.updated_at.desc())
+        query = query.offset(skip).limit(limit)
+        result = await db.execute(query)
+        items = list(result.scalars().all())
+
+        return items, total
+
+    async def get_review_stats(
+        self,
+        db: AsyncSession,
+    ) -> dict:
+        """
+        Get review statistics for glossary entries.
+
+        Args:
+            db: Database session
+
+        Returns:
+            Dictionary with counts by review status
+        """
+        query = select(
+            Glossary.review_status,
+            func.count().label("count"),
+        ).group_by(Glossary.review_status)
+
+        result = await db.execute(query)
+        stats = {status.value: 0 for status in GlossaryReviewStatus}
+        for row in result.all():
+            stats[row.review_status.value] = row.count
+
+        return stats
 
 
 # Global instance
