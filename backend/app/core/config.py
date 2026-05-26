@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     )
 
     # Application
-    APP_NAME: str = "Ex-pertie Backend"
+    APP_NAME: str = "渠道通后端"
     APP_ENV: str = "development"
     DEBUG: bool = True
     API_PREFIX: str = "/api/v1"

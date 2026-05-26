@@ -2,7 +2,7 @@
 Authentication API endpoints.
 """
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Body, Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -218,4 +218,39 @@ async def update_role(
         code=200,
         message="Role updated successfully",
         data=RoleResponse.model_validate(role),
+    )
+
+
+# ============== ASSO SSO Endpoints ==============
+
+@router.post("/asso/callback", response_model=ApiResponse[LoginResponse])
+async def asso_callback(
+    body: dict = Body(...),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    ASSO SSO callback endpoint.
+    Validates ASSO token and returns local JWT token.
+
+    - **body**: JSON body with assoToken field
+    """
+    asso_token = body.get("assoToken")
+    if not asso_token:
+        from app.middleware.exception import BadRequestError
+        raise BadRequestError(message="assoToken is required")
+
+    from app.services.asso_service import AssoService
+
+    asso_service = AssoService()
+    result = await asso_service.validate_and_create_user(db, asso_token)
+
+    return ApiResponse(
+        code=200,
+        message="Login successful",
+        data=LoginResponse(
+            access_token=result["access_token"],
+            refresh_token=result.get("refresh_token", ""),
+            token_type=result["token_type"],
+            user=UserResponse.model_validate(result["user"]),
+        ),
     )

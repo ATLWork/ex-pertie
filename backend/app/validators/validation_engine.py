@@ -682,9 +682,11 @@ class ValidationEngine:
         """
         engine = cls()
         for rule_config in rules_config:
-            field = rule_config.pop("field")
-            rule_type = rule_config.pop("rule_type")
-            engine.add_rule(field, rule_type, **rule_config)
+            # Make a copy to avoid mutating the original config
+            config = dict(rule_config)
+            field = config.pop("field")
+            rule_type = config.pop("rule_type")
+            engine.add_rule(field, rule_type, **config)
         return engine
 
 

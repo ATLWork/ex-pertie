@@ -32,14 +32,14 @@ export default function HotelsPage() {
   const [editingHotel, setEditingHotel] = useState<Hotel | null>(null)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<string | undefined>()
-  const [name, setName] = useState('')
+  const [nameCn, setNameCn] = useState('')
   const [nameEn, setNameEn] = useState('')
-  const [address, setAddress] = useState('')
+  const [addressCn, setAddressCn] = useState('')
+  const [province, setProvince] = useState('')
   const [city, setCity] = useState('')
-  const [country, setCountry] = useState('')
-  const [starRating, setStarRating] = useState<number | undefined>()
+  const [countryCode, setCountryCode] = useState('CN')
   const [status, setStatus] = useState('draft')
-  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null)
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
   // Extension fields
   const [description, setDescription] = useState('')
   const [cancellationPolicy, setCancellationPolicy] = useState('')
@@ -72,19 +72,24 @@ export default function HotelsPage() {
   }
 
   const handleSubmit = async () => {
-    if (!name.trim()) {
+    if (!nameCn.trim()) {
       toast({ title: '请输入酒店名称', variant: 'error' })
       return
     }
-    if (!address.trim()) {
+    if (!addressCn.trim()) {
       toast({ title: '请输入地址', variant: 'error' })
+      return
+    }
+    if (!province.trim()) {
+      toast({ title: '请输入省份', variant: 'error' })
       return
     }
     try {
       const values = {
-        name: name, name_cn: name, name_en: nameEn,
-        address: address, address_cn: address,
-        city, country, star_rating: starRating, status: status as 'active' | 'inactive' | 'draft',
+        name_cn: nameCn, name_en: nameEn,
+        address_cn: addressCn,
+        province, city, country_code: countryCode,
+        status: status as 'draft' | 'pending_review' | 'approved' | 'published' | 'suspended',
         // Extension fields
         check_in_time: checkInTime, check_out_time: checkOutTime,
         cancellation_policy: cancellationPolicy, prepayment_policy: prepaymentPolicy,
@@ -109,12 +114,12 @@ export default function HotelsPage() {
 
   const handleEdit = (hotel: Hotel) => {
     setEditingHotel(hotel)
-    setName(hotel.name_cn)
+    setNameCn(hotel.name_cn)
     setNameEn(hotel.name_en || '')
-    setAddress(hotel.address_cn)
+    setAddressCn(hotel.address_cn)
+    setProvince(hotel.province)
     setCity(hotel.city)
-    setCountry(hotel.country)
-    setStarRating(hotel.star_rating)
+    setCountryCode(hotel.country_code || 'CN')
     setStatus(hotel.status || 'draft')
     setDescription(hotel.description || '')
     setCancellationPolicy(hotel.cancellation_policy || '')
@@ -130,7 +135,7 @@ export default function HotelsPage() {
     setIsModalOpen(true)
   }
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     try {
       await deleteHotelMutation.mutateAsync(id)
       toast({ title: '酒店删除成功', variant: 'success' })
@@ -142,12 +147,12 @@ export default function HotelsPage() {
   }
 
   const resetForm = () => {
-    setName('')
+    setNameCn('')
     setNameEn('')
-    setAddress('')
+    setAddressCn('')
+    setProvince('')
     setCity('')
-    setCountry('')
-    setStarRating(undefined)
+    setCountryCode('CN')
     setStatus('draft')
     setEditingHotel(null)
     setDescription('')
@@ -170,17 +175,16 @@ export default function HotelsPage() {
 
   const columns = [
     { key: 'id', title: 'ID' },
-    { key: 'name', title: '名称' },
+    { key: 'name_cn', title: '名称' },
     { key: 'name_en', title: '英文名' },
     { key: 'city', title: '城市' },
-    { key: 'country', title: '国家' },
-    { key: 'star_rating', title: '星级', render: (val: number) => val ? `${val} 星` : '-' },
+    { key: 'province', title: '省份' },
     {
       key: 'status',
       title: '状态',
       render: (val: string) => {
-        const variant = val === 'active' ? 'success' : val === 'inactive' ? 'error' : 'default'
-        const labels: Record<string, string> = { active: '启用', inactive: '停用', draft: '草稿' }
+        const variant = val === 'approved' || val === 'published' ? 'success' : val === 'suspended' ? 'error' : 'default'
+        const labels: Record<string, string> = { draft: '草稿', pending_review: '待审核', approved: '已审核', published: '已发布', suspended: '已下线' }
         return <Badge variant={variant}>{labels[val] || val}</Badge>
       },
     },
@@ -246,7 +250,7 @@ export default function HotelsPage() {
           <div className="space-y-4 py-4">
             <div>
               <label className="text-sm font-medium text-woye mb-1 block">酒店名称</label>
-              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="输入酒店名称" />
+              <Input value={nameCn} onChange={(e) => setNameCn(e.target.value)} placeholder="输入酒店名称" />
             </div>
             <div>
               <label className="text-sm font-medium text-woye mb-1 block">英文名称</label>
@@ -254,33 +258,22 @@ export default function HotelsPage() {
             </div>
             <div>
               <label className="text-sm font-medium text-woye mb-1 block">地址</label>
-              <Input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="输入地址" />
+              <Input value={addressCn} onChange={(e) => setAddressCn(e.target.value)} placeholder="输入地址" />
             </div>
             <div className="flex gap-4">
+              <div className="flex-1">
+                <label className="text-sm font-medium text-woye mb-1 block">省份</label>
+                <Input value={province} onChange={(e) => setProvince(e.target.value)} placeholder="省份" />
+              </div>
               <div className="flex-1">
                 <label className="text-sm font-medium text-woye mb-1 block">城市</label>
                 <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="城市" />
               </div>
-              <div className="flex-1">
-                <label className="text-sm font-medium text-woye mb-1 block">国家</label>
-                <Input value={country} onChange={(e) => setCountry(e.target.value)} placeholder="国家" />
-              </div>
             </div>
             <div className="flex gap-4">
               <div className="flex-1">
-                <label className="text-sm font-medium text-woye mb-1 block">星级</label>
-                <select
-                  value={starRating || ''}
-                  onChange={(e) => setStarRating(e.target.value ? Number(e.target.value) : undefined)}
-                  className="h-10 w-full rounded-md border border-gray-200 px-3 text-sm"
-                >
-                  <option value="">选择</option>
-                  <option value="1">1 星</option>
-                  <option value="2">2 星</option>
-                  <option value="3">3 星</option>
-                  <option value="4">4 星</option>
-                  <option value="5">5 星</option>
-                </select>
+                <label className="text-sm font-medium text-woye mb-1 block">国家代码</label>
+                <Input value={countryCode} onChange={(e) => setCountryCode(e.target.value)} placeholder="CN" />
               </div>
               <div className="flex-1">
                 <label className="text-sm font-medium text-woye mb-1 block">状态</label>
@@ -290,8 +283,10 @@ export default function HotelsPage() {
                   className="h-10 w-full rounded-md border border-gray-200 px-3 text-sm"
                 >
                   <option value="draft">草稿</option>
-                  <option value="active">启用</option>
-                  <option value="inactive">停用</option>
+                  <option value="pending_review">待审核</option>
+                  <option value="approved">已审核</option>
+                  <option value="published">已发布</option>
+                  <option value="suspended">已下线</option>
                 </select>
               </div>
             </div>

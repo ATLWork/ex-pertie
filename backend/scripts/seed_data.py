@@ -35,6 +35,13 @@ from app.models import (
     HotelBrand,
     HotelStatus,
 )
+from app.models.booking import (
+    BookingHotel,
+    BookingRoom,
+    BookingHotelExtension,
+    BookingRoomExtension,
+    BookingSource,
+)
 
 
 # =============================================================================
@@ -292,6 +299,94 @@ def get_seed_rooms(hotel_ids: List[str]) -> List[dict]:
     return rooms
 
 
+def get_seed_booking_sources() -> List[dict]:
+    """Get seed booking sources."""
+    return [
+        {"code": "booking", "name": "Booking.com", "is_active": True},
+        {"code": "expedia", "name": "Expedia", "is_active": True},
+        {"code": "ctrip", "name": "Ctrip", "is_active": False},
+    ]
+
+
+def get_seed_booking_hotels() -> List[dict]:
+    """Get seed booking hotel data."""
+    return [
+        {
+            "source": BookingSource.BOOKING_COM,
+            "source_hotel_id": "bk_100001",
+            "name_en": "Atour Hotel Shanghai Bund",
+            "city": "Shanghai",
+            "address": "100 Zhongshan East Road, Huangpu District, Shanghai",
+            "country_code": "CN",
+            "star_rating": 4.5,
+            "latitude": 31.2405,
+            "longitude": 121.4901,
+            "chain_code": "ATOUR",
+            "is_active": True,
+        },
+        {
+            "source": BookingSource.BOOKING_COM,
+            "source_hotel_id": "bk_100002",
+            "name_en": "Atour Hotel Hangzhou West Lake",
+            "city": "Hangzhou",
+            "address": "120 Shuguang Road, Xihu District, Hangzhou",
+            "country_code": "CN",
+            "star_rating": 4.0,
+            "latitude": 30.2655,
+            "longitude": 120.1487,
+            "chain_code": "ATOUR",
+            "is_active": True,
+        },
+        {
+            "source": BookingSource.BOOKING_COM,
+            "source_hotel_id": "bk_100003",
+            "name_en": "ATour X Beijing Sanlitun",
+            "city": "Beijing",
+            "address": "8 Gong Ren Ti Yu Chang North Road, Chaoyang District, Beijing",
+            "country_code": "CN",
+            "star_rating": 4.5,
+            "latitude": 39.9357,
+            "longitude": 116.4467,
+            "chain_code": "ATOURX",
+            "is_active": True,
+        },
+        {
+            "source": BookingSource.EXPEDIA,
+            "source_hotel_id": "ex_200001",
+            "name_en": "ZHotel Chengdu Taikoo Li",
+            "city": "Chengdu",
+            "address": "8 Zhong Sha Mao Street, Jinjiang District, Chengdu",
+            "country_code": "CN",
+            "star_rating": 4.0,
+            "latitude": 30.6598,
+            "longitude": 104.0837,
+            "chain_code": "ZHOTEL",
+            "is_active": False,
+        },
+    ]
+
+
+def get_seed_booking_rooms(hotel_ids: List[str]) -> List[dict]:
+    """Generate seed booking room data for given hotels."""
+    room_templates = [
+        {"room_type": "1", "name_en": "Standard King Room", "bed_type": "200", "max_occupancy": 2},
+        {"room_type": "1", "name_en": "Standard Twin Room", "bed_type": "203", "max_occupancy": 2},
+        {"room_type": "4", "name_en": "Deluxe King Room", "bed_type": "200", "max_occupancy": 2},
+        {"room_type": "4", "name_en": "Business Suite", "bed_type": "200", "max_occupancy": 3},
+    ]
+
+    rooms = []
+    for hotel_id in hotel_ids:
+        for i, template in enumerate(room_templates[:3]):
+            room = template.copy()
+            room["hotel_id"] = hotel_id
+            room["source_room_id"] = f"room_{hotel_id[:8]}_{i}"
+            room["is_active"] = True
+            rooms.append(room)
+
+    return rooms
+
+
 # =============================================================================
 # Database Operations
 # =============================================================================
@@ -306,6 +401,8 @@ async def seed_database() -> dict:
     stats = {
         "hotels_created": 0,
         "rooms_created": 0,
+        "booking_hotels_created": 0,
+        "booking_rooms_created": 0,
         "errors": [],
     }
 
@@ -339,15 +436,46 @@ async def seed_database() -> dict:
                 session.add(room)
                 stats["rooms_created"] += 1
 
+            # Create Booking sources
+            source_data_list = get_seed_booking_sources()
+            for source_data in source_data_list:
+                source = BookingSource(**source_data)
+                session.add(source)
+
+            await session.flush()
+
+            # Create Booking hotels
+            booking_hotel_data_list = get_seed_booking_hotels()
+            created_booking_hotels = []
+
+            for hotel_data in booking_hotel_data_list:
+                hotel = BookingHotel(**hotel_data)
+                session.add(hotel)
+                created_booking_hotels.append(hotel)
+
+            await session.flush()
+
+            # Create Booking rooms
+            booking_hotel_ids = [hotel.id for hotel in created_booking_hotels]
+            booking_room_data_list = get_seed_booking_rooms(booking_hotel_ids)
+
+            for room_data in booking_room_data_list:
+                room = BookingRoom(**room_data)
+                session.add(room)
+                stats["booking_rooms_created"] += 1
+
             await session.commit()
 
             stats["hotels_created"] = len(created_hotels)
+            stats["booking_hotels_created"] = len(created_booking_hotels)
 
             print(f"\n{'='*50}")
             print("Database seeding completed successfully!")
             print(f"{'='*50}")
             print(f"Hotels created: {stats['hotels_created']}")
             print(f"Rooms created: {stats['rooms_created']}")
+            print(f"Booking hotels created: {stats['booking_hotels_created']}")
+            print(f"Booking rooms created: {stats['booking_rooms_created']}")
             print(f"{'='*50}")
 
             for hotel in created_hotels:
@@ -374,11 +502,21 @@ async def clear_seed_data() -> dict:
     stats = {
         "hotels_deleted": 0,
         "rooms_deleted": 0,
+        "booking_hotels_deleted": 0,
+        "booking_rooms_deleted": 0,
         "errors": [],
     }
 
     async with async_session_maker() as session:
         try:
+            # Delete Booking rooms first (due to foreign key)
+            result = await session.execute(delete(BookingRoom))
+            stats["booking_rooms_deleted"] = result.rowcount
+
+            # Delete Booking hotels
+            result = await session.execute(delete(BookingHotel))
+            stats["booking_hotels_deleted"] = result.rowcount
+
             # Delete rooms first (due to foreign key)
             result = await session.execute(delete(Room))
             stats["rooms_deleted"] = result.rowcount
@@ -394,6 +532,8 @@ async def clear_seed_data() -> dict:
             print(f"{'='*50}")
             print(f"Hotels deleted: {stats['hotels_deleted']}")
             print(f"Rooms deleted: {stats['rooms_deleted']}")
+            print(f"Booking hotels deleted: {stats['booking_hotels_deleted']}")
+            print(f"Booking rooms deleted: {stats['booking_rooms_deleted']}")
             print(f"{'='*50}")
 
         except Exception as e:

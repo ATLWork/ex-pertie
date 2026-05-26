@@ -9,6 +9,8 @@ from app.api.v1.imports import router as imports_router
 from app.api.v1.exports import router as exports_router
 from app.api.v1.references import router as references_router
 from app.api.v1.terminology import router as terminology_router
+from app.api.v1.translation_review import router as translation_review_router
+from app.api.v1.booking import router as booking_router
 
 api_router = APIRouter()
 
@@ -21,3 +23,5 @@ api_router.include_router(imports_router, prefix="/imports", tags=["imports"])
 api_router.include_router(exports_router, prefix="/exports", tags=["exports"])
 api_router.include_router(references_router, prefix="/references", tags=["references"])
 api_router.include_router(terminology_router, prefix="/terminology", tags=["terminology"])
+api_router.include_router(translation_review_router, prefix="/translation/review", tags=["translation-review"])
+api_router.include_router(booking_router, prefix="/booking", tags=["booking"])

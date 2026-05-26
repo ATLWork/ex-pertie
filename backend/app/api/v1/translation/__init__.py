@@ -17,8 +17,15 @@ from app.schemas.translation import (
 )
 from app.services.translation import get_orchestrator
 from app.services.translation.orchestrator import TranslationOrchestrator
+from app.services.translation_history import translation_history
+from app.models.translation import TranslationType, ReviewStatus
 
 from app.api.v1.translation import rules, references, glossary
+
+from app.core.database import get_db
+from app.core.deps import get_current_user, get_optional_user
+from app.models.user import User
+from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter()
 
@@ -48,6 +55,8 @@ def get_translation_orchestrator() -> TranslationOrchestrator:
 async def translate_text(
     request: TranslateRequest,
     orchestrator: TranslationOrchestrator = Depends(get_translation_orchestrator),
+    current_user: Optional[User] = Depends(get_optional_user),
+    db: AsyncSession = Depends(get_db),
 ) -> ApiResponse[TranslationResult]:
     """
     Translate a single text.
@@ -77,7 +86,28 @@ async def translate_text(
         use_cache=request.use_cache,
         use_ai_enhance=request.use_ai_enhance,
         context=request.context,
+        db=db,
     )
+
+    # Create translation history record for review
+    try:
+        operator_name = current_user.full_name or current_user.username if current_user else "anonymous"
+        await translation_history.create(
+            db,
+            obj_in={
+                "source_text": request.text,
+                "translated_text": result.translated_text,
+                "source_lang": request.source_lang,
+                "target_lang": request.target_lang,
+                "translation_type": TranslationType.MACHINE if result.source.value == "machine" else TranslationType.AI,
+                "review_status": ReviewStatus.PENDING,
+                "operator_name": operator_name,
+            },
+        )
+        await db.commit()
+    except Exception as e:
+        logger.warning(f"Failed to create translation history: {e}")
+        await db.rollback()
 
     return ApiResponse(
         code=200,
@@ -101,6 +131,7 @@ async def translate_text(
 async def batch_translate(
     request: BatchTranslateRequest,
     orchestrator: TranslationOrchestrator = Depends(get_translation_orchestrator),
+    current_user: Optional[User] = Depends(get_optional_user),
 ) -> ApiResponse[BatchTranslationResult]:
     """
     Batch translate multiple texts.
@@ -249,4 +280,55 @@ async def get_cache_stats() -> ApiResponse[dict]:
         code=200,
         message="Cache statistics retrieved",
         data=stats,
+    )
+
+
+@router.post(
+    "/evaluate-quality",
+    summary="Evaluate translation quality",
+    description="Evaluate the quality of a translation across multiple dimensions.",
+    responses={
+        200: {"description": "Quality evaluation completed"},
+        400: {"description": "Invalid request"},
+        500: {"description": "Evaluation failed"},
+    },
+)
+async def evaluate_translation_quality(
+    original_text: str = Query(..., description="Original source text"),
+    translated_text: str = Query(..., description="Translated text to evaluate"),
+    source_lang: str = Query("zh", description="Source language code"),
+    target_lang: str = Query("en", description="Target language code"),
+    db: AsyncSession = Depends(get_db),
+) -> ApiResponse[dict]:
+    """
+    Evaluate translation quality.
+
+    Returns quality scores across multiple dimensions:
+    - Accuracy: Translation correctness
+    - Professionalism: Domain terminology usage
+    - Localization: Cultural adaptation
+    - Completeness: Full translation vs partial
+    - Booking match rate: Similarity to Booking.com references
+    - Overall: Weighted average score
+    """
+    from app.services.translation.quality_evaluator import get_quality_evaluator
+
+    evaluator = get_quality_evaluator()
+    evaluation = await evaluator.evaluate(
+        original_text=original_text,
+        translated_text=translated_text,
+        source_lang=source_lang,
+        target_lang=target_lang,
+        db=db,
+    )
+
+    return ApiResponse(
+        code=200,
+        message="Quality evaluation completed",
+        data={
+            "scores": evaluation.scores.to_dict(),
+            "issues": evaluation.issues,
+            "suggestions": evaluation.suggestions,
+            "reference_matches": evaluation.reference_matches,
+        },
     )

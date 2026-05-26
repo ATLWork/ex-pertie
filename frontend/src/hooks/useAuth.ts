@@ -1,12 +1,10 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import apiClient from '@/api/client'
 import { useAuthStore } from '@/stores/authStore'
 
 export function useLogin() {
   const { login } = useAuthStore()
   return useMutation({
-    mutationFn: ({ username, password }: { username: string; password: string }) =>
-      login(username, password),
+    mutationFn: () => login(),
   })
 }
 

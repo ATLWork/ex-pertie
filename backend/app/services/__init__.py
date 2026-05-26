@@ -6,6 +6,8 @@ from app.services.translation_rule import CRUDTranslationRule, translation_rule
 from app.services.translation_reference import CRUDTranslationReference, translation_reference
 from app.services.glossary import CRUDGlossary, glossary
 from app.services.translation_history import CRUDTranslationHistory, translation_history
+from app.services.booking_reference_service import CRUDBookingReference, booking_reference
+from app.services.terminology_service import CRUDTerminology, terminology
 
 __all__ = [
     "AuthService",
@@ -21,4 +23,8 @@ __all__ = [
     "glossary",
     "CRUDTranslationHistory",
     "translation_history",
+    "CRUDBookingReference",
+    "booking_reference",
+    "CRUDTerminology",
+    "terminology",
 ]

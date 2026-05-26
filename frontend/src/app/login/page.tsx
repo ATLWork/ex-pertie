@@ -1,199 +1,137 @@
 'use client'
 
-import { Form, Input, Button, Card, message, Tabs } from 'antd'
-import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons'
-import { useRouter } from 'next/navigation'
-import { useLogin, useRegister } from '@/hooks/useAuth'
-import { useEffect } from 'react'
+import { Button, Card, Spinner } from '@/components/ui'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense, useEffect, useState } from 'react'
+import { login, userStore, getUserByToken } from '@/services/asso'
+import { isAnonymousEnabled, enableAnonymousMode } from '@/services/asso/config'
+import apiClient from '@/api/client'
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter()
-  const loginMutation = useLogin()
-  const registerMutation = useRegister()
-  const [loginForm] = Form.useForm()
-  const [registerForm] = Form.useForm()
+  const searchParams = useSearchParams()
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      router.push('/import')
+    if (isAnonymousEnabled()) {
+      setIsLoading(false)
+      return
     }
-  }, [router])
 
-  const handleLogin = async (values: { username: string; password: string }) => {
+    const existingToken = userStore.getToken()
+    if (existingToken) {
+      validateAndLogin(existingToken)
+      return
+    }
+
+    const assoTokenFromUrl = searchParams.get('assoToken')
+    if (assoTokenFromUrl) {
+      userStore.setToken(assoTokenFromUrl)
+      validateAndLogin(assoTokenFromUrl)
+      return
+    }
+
+    const feishuCode = searchParams.get('code')
+    if (feishuCode) {
+      handleFeishuCallback(feishuCode)
+      return
+    }
+
+    setIsLoading(false)
+  }, [searchParams])
+
+  const validateAndLogin = async (assoToken: string) => {
     try {
-      await loginMutation.mutateAsync(values)
-      message.success('Login successful')
+      const userInfo = await getUserByToken(assoToken)
+      userStore.setUserInfo(userInfo)
+      userStore.setIsAuth(true)
+
+      const response = await apiClient.post('/auth/asso/callback', { assoToken })
+      const { access_token } = response.data.data
+      localStorage.setItem('token', access_token)
+
       router.push('/import')
-    } catch {
-      message.error('Login failed. Please check your credentials.')
+    } catch (error) {
+      console.error('Login validation failed:', error)
+      userStore.clear()
+      setIsLoading(false)
     }
   }
 
-  const handleRegister = async (values: { username: string; email: string; password: string }) => {
+  const handleFeishuCallback = async (code: string) => {
     try {
-      await registerMutation.mutateAsync(values)
-      message.success('Registration successful! Please login.')
-      loginForm.setFieldsValue({ username: values.username })
-      registerForm.resetFields()
-    } catch {
-      message.error('Registration failed. Please try again.')
+      const { loginByFeiShu } = await import('@/services/asso')
+      const result = await loginByFeiShu(code)
+      if (result.assoToken) {
+        userStore.setToken(result.assoToken)
+        validateAndLogin(result.assoToken)
+      }
+    } catch (error) {
+      console.error('Feishu login failed:', error)
+      userStore.clear()
+      setIsLoading(false)
     }
   }
 
-  const tabItems = [
-    {
-      key: 'login',
-      label: 'Login',
-      children: (
-        <Form
-          form={loginForm}
-          layout="vertical"
-          onFinish={handleLogin}
-          style={{ maxWidth: 320 }}
-        >
-          <Form.Item
-            name="username"
-            rules={[{ required: true, message: 'Please enter your username' }]}
-          >
-            <Input
-              prefix={<UserOutlined />}
-              placeholder="Username"
-              size="large"
-            />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: 'Please enter your password' }]}
-          >
-            <Input.Password
-              prefix={<LockOutlined />}
-              placeholder="Password"
-              size="large"
-            />
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              size="large"
-              block
-              loading={loginMutation.isPending}
-            >
-              Login
-            </Button>
-          </Form.Item>
-        </Form>
-      ),
-    },
-    {
-      key: 'register',
-      label: 'Register',
-      children: (
-        <Form
-          form={registerForm}
-          layout="vertical"
-          onFinish={handleRegister}
-          style={{ maxWidth: 320 }}
-        >
-          <Form.Item
-            name="username"
-            rules={[
-              { required: true, message: 'Please enter a username' },
-              { min: 3, message: 'Username must be at least 3 characters' },
-            ]}
-          >
-            <Input
-              prefix={<UserOutlined />}
-              placeholder="Username"
-              size="large"
-            />
-          </Form.Item>
-          <Form.Item
-            name="email"
-            rules={[
-              { required: true, message: 'Please enter your email' },
-              { type: 'email', message: 'Please enter a valid email' },
-            ]}
-          >
-            <Input
-              prefix={<MailOutlined />}
-              placeholder="Email"
-              size="large"
-            />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            rules={[
-              { required: true, message: 'Please enter a password' },
-              { min: 6, message: 'Password must be at least 6 characters' },
-            ]}
-          >
-            <Input.Password
-              prefix={<LockOutlined />}
-              placeholder="Password"
-              size="large"
-            />
-          </Form.Item>
-          <Form.Item
-            name="confirmPassword"
-            dependencies={['password']}
-            rules={[
-              { required: true, message: 'Please confirm your password' },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue('password') === value) {
-                    return Promise.resolve()
-                  }
-                  return Promise.reject(new Error('Passwords do not match'))
-                },
-              }),
-            ]}
-          >
-            <Input.Password
-              prefix={<LockOutlined />}
-              placeholder="Confirm Password"
-              size="large"
-            />
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              size="large"
-              block
-              loading={registerMutation.isPending}
-            >
-              Register
-            </Button>
-          </Form.Item>
-        </Form>
-      ),
-    },
-  ]
+  const handleLogin = () => {
+    login().goToLogin()
+  }
+
+  const handleAnonymousAccess = () => {
+    enableAnonymousMode()
+    router.push('/import')
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-woye via-woye/90 to-gray-700">
+        <Spinner size="lg" />
+      </div>
+    )
+  }
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      }}
-    >
-      <Card
-        style={{ width: 420, boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}
-        styles={{ body: { padding: 32 } }}
-      >
-        <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 8, color: '#1890ff' }}>
-            Ex-pertie
-          </h1>
-          <p style={{ color: '#666' }}>Expedia Hotel Data Management Platform</p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-woye via-woye/90 to-gray-700">
+      <Card className="w-full max-w-md shadow-2xl">
+        <div className="p-8">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-woye mb-2 tracking-tight">
+              渠道通
+            </h1>
+            <p className="text-gray-500 text-sm">
+              Expedia 酒店数据管理平台
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <Button size="lg" block onClick={handleLogin}>
+              使用 SSO 登录
+            </Button>
+
+            <div className="relative flex items-center py-2">
+              <div className="flex-grow border-t border-gray-200" />
+              <span className="flex-shrink mx-4 text-sm text-gray-400">或</span>
+              <div className="flex-grow border-t border-gray-200" />
+            </div>
+
+            <Button size="lg" block variant="secondary" onClick={handleAnonymousAccess}>
+              游客访问
+            </Button>
+          </div>
         </div>
-        <Tabs items={tabItems} defaultActiveKey="login" centered />
       </Card>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-woye via-woye/90 to-gray-700">
+        <Spinner size="lg" />
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   )
 }
