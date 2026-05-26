@@ -251,7 +251,10 @@ class RoomImportService:
             List of row dictionaries
         """
         reader = csv.reader(StringIO(content))
-        headers = next(reader)
+        try:
+            headers = next(reader)
+        except StopIteration:
+            headers = []
 
         if not headers:
             raise ValueError("CSV file has no headers")

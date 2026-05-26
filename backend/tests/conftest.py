@@ -104,7 +104,7 @@ async def test_user(db_session: AsyncSession) -> User:
     )
     db_session.add(user)
     await db_session.flush()
-    await db_session.refresh(user, ["roles"])
+    await db_session.refresh(user, ["roles", "updated_at", "created_at"])
     return user
 
 
@@ -121,7 +121,7 @@ async def test_superuser(db_session: AsyncSession) -> User:
     )
     db_session.add(user)
     await db_session.flush()
-    await db_session.refresh(user, ["roles"])
+    await db_session.refresh(user, ["roles", "updated_at", "created_at"])
     return user
 
 

@@ -321,7 +321,7 @@ class UserService:
             setattr(user, field, value)
 
         await db.flush()
-        await db.refresh(user, ["roles"])
+        await db.refresh(user, ["roles", "updated_at", "created_at"])
 
         logger.info(f"User updated: {user.username}")
 
@@ -368,7 +368,7 @@ class UserService:
         """
         user.status = UserStatus.INACTIVE
         await db.flush()
-        await db.refresh(user)
+        await db.refresh(user, ["roles", "updated_at", "created_at"])
 
         logger.info(f"User deactivated: {user.username}")
 
@@ -388,7 +388,7 @@ class UserService:
         """
         user.status = UserStatus.ACTIVE
         await db.flush()
-        await db.refresh(user)
+        await db.refresh(user, ["roles", "updated_at", "created_at"])
 
         logger.info(f"User activated: {user.username}")
 
