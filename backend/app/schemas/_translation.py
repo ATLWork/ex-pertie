@@ -10,7 +10,9 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from app.models.translation import (
     GlossaryCategory,
+    GlossaryReviewStatus,
     ReferenceSource,
+    ReviewStatus,
     RuleType,
     TranslationType,
 )
@@ -45,6 +47,10 @@ class TranslationRuleBase(BaseModel):
     field_name: str = Field(..., max_length=100, description="Field name to apply rule")
     rule_type: RuleType = Field(default=RuleType.AI, description="Rule type")
     rule_value: str = Field(..., description="Rule value/mapping JSON")
+    region: Optional[str] = Field(None, max_length=50, description="Country/Region (e.g., CN)")
+    province: Optional[str] = Field(None, max_length=50, description="Province/State")
+    city: Optional[str] = Field(None, max_length=50, description="City")
+    priority: int = Field(default=100, ge=1, le=1000, description="Priority (higher = more priority)")
     is_active: bool = Field(default=True, description="Whether rule is active")
 
 
@@ -158,6 +164,10 @@ class GlossaryResponse(GlossaryBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int = Field(..., description="Glossary ID")
+    review_status: GlossaryReviewStatus = Field(default=GlossaryReviewStatus.PENDING, description="Review status")
+    reviewed_by: Optional[str] = Field(None, description="Reviewer user ID")
+    reviewed_at: Optional[datetime] = Field(None, description="Review timestamp")
+    reviewed_notes: Optional[str] = Field(None, description="Review notes")
     created_at: datetime = Field(..., description="Created at")
     updated_at: datetime = Field(..., description="Updated at")
 
@@ -176,6 +186,9 @@ class TranslationHistoryBase(BaseModel):
     reference_used: bool = Field(default=False, description="Whether reference library was used")
     glossary_used: bool = Field(default=False, description="Whether glossary was used")
     confidence_score: Optional[float] = Field(None, ge=0.0, le=1.0, description="Confidence score (0-1)")
+    review_status: ReviewStatus = Field(default=ReviewStatus.PENDING, description="Review status")
+    booking_reference: Optional[str] = Field(None, description="Booking.com reference translation")
+    operator_name: Optional[str] = Field(None, description="Operator name")
 
 
 class TranslationHistoryCreate(TranslationHistoryBase):
@@ -190,6 +203,12 @@ class TranslationHistoryResponse(TranslationHistoryBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int = Field(..., description="History ID")
+    review_status: ReviewStatus = Field(default=ReviewStatus.PENDING, description="Review status")
+    booking_reference: Optional[str] = Field(None, description="Booking.com reference translation")
+    reviewed_by: Optional[str] = Field(None, description="Reviewer user ID")
+    reviewed_at: Optional[datetime] = Field(None, description="Review timestamp")
+    review_notes: Optional[str] = Field(None, description="Review notes")
+    operator_name: Optional[str] = Field(None, description="Operator name")
     created_at: datetime = Field(..., description="Created at")
 
 

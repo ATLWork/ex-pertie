@@ -37,6 +37,22 @@ class GlossaryCategory(str, enum.Enum):
     GENERAL = "general"  # General terms
 
 
+class GlossaryReviewStatus(str, enum.Enum):
+    """Glossary review status enum."""
+
+    PENDING = "pending"  # Pending review
+    APPROVED = "approved"  # Approved
+    REJECTED = "rejected"  # Rejected
+
+
+class ReviewStatus(str, enum.Enum):
+    """Translation review status enum."""
+
+    PENDING = "pending"  # Pending review
+    APPROVED = "approved"  # Approved
+    REJECTED = "rejected"  # Rejected
+
+
 class TranslationType(str, enum.Enum):
     """Translation type enum."""
 
@@ -69,6 +85,18 @@ class TranslationRule(Base):
     )
     rule_value: Mapped[str] = mapped_column(
         Text, nullable=False, comment="Rule value/mapping JSON"
+    )
+    region: Mapped[Optional[str]] = mapped_column(
+        String(50), nullable=True, index=True, comment="Country/Region (e.g., CN, US)"
+    )
+    province: Mapped[Optional[str]] = mapped_column(
+        String(50), nullable=True, index=True, comment="Province/State"
+    )
+    city: Mapped[Optional[str]] = mapped_column(
+        String(50), nullable=True, index=True, comment="City"
+    )
+    priority: Mapped[int] = mapped_column(
+        Integer, default=100, nullable=False, comment="Rule priority (1-1000, higher = more priority)"
     )
     is_active: Mapped[bool] = mapped_column(
         Boolean, default=True, nullable=False, comment="Whether rule is active"
@@ -155,6 +183,19 @@ class Glossary(Base):
     is_active: Mapped[bool] = mapped_column(
         Boolean, default=True, nullable=False, comment="Whether term is active"
     )
+    # Review fields
+    review_status: Mapped[GlossaryReviewStatus] = mapped_column(
+        Enum(GlossaryReviewStatus), nullable=False, default=GlossaryReviewStatus.PENDING, comment="Review status"
+    )
+    reviewed_by: Mapped[Optional[str]] = mapped_column(
+        String(100), nullable=True, comment="Reviewer user ID"
+    )
+    reviewed_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime, nullable=True, comment="Review timestamp"
+    )
+    reviewed_notes: Mapped[Optional[str]] = mapped_column(
+        Text, nullable=True, comment="Review notes"
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime, default=func.now(), nullable=False
     )
@@ -198,6 +239,25 @@ class TranslationHistory(Base):
     )
     confidence_score: Mapped[Optional[float]] = mapped_column(
         Float, nullable=True, comment="Confidence score (0-1)"
+    )
+    # Review fields
+    review_status: Mapped[ReviewStatus] = mapped_column(
+        Enum(ReviewStatus), nullable=False, default=ReviewStatus.PENDING, comment="Review status"
+    )
+    booking_reference: Mapped[Optional[str]] = mapped_column(
+        Text, nullable=True, comment="Booking.com reference translation"
+    )
+    reviewed_by: Mapped[Optional[str]] = mapped_column(
+        String(100), nullable=True, comment="Reviewer user ID"
+    )
+    reviewed_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime, nullable=True, comment="Review timestamp"
+    )
+    review_notes: Mapped[Optional[str]] = mapped_column(
+        Text, nullable=True, comment="Review notes"
+    )
+    operator_name: Mapped[Optional[str]] = mapped_column(
+        String(100), nullable=True, comment="Operator name"
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime, default=func.now(), nullable=False, index=True
