@@ -764,11 +764,109 @@ OTA_HotelInvNotifRQ
 
 | 版本 | 日期 | 变更内容 | 作者 |
 |-----|------|---------|------|
+| v1.3 | 2026-05-26 | 新增 Expedia 主数据导入模块设计（第二章），基于模板 sheet "亚朵房型信息"+"门店基础信息" | Claude |
 | v1.2 | 2026-05-25 | 调整优先级：Booking.com 高优先级（主数据维护+翻译），Expedia 降为低优先级 | Claude |
 | v1.1 | 2026-05-25 | 新增 Booking.com 数据对接章节，对比 Expedia 与 Booking.com 主数据要求 | Claude |
 
 ---
 
-**文档版本**: v1.2
-**最后更新**: 2026-05-25
+## 九、Expedia 主数据导入模块
+
+> **优先级**：低优先级（当前阶段支持数据生成，Expedia 平台对接后续支持）
+
+### 9.1 数据源
+
+**输入文件**: `reference/Expedia 亚朵集团酒店上线表格 - APM Onboarding Sheet example.xlsx`
+
+| Sheet 名 | 内容 | 行数 | 关联键 |
+|---------|------|------|--------|
+| `门店基础信息` | 酒店基础信息（门店ID、名称、地址、电话、品牌等） | 2067 家 | 门店ID |
+| `亚朵房型信息` | 房型主数据（集团房型ID、房型代码、英文名、床型、面积等） | 17025 条 | 集团酒店编号 = 门店ID |
+
+> 注：`门店基础信息.门店ID` = `亚朵房型信息.集团酒店编号`，两表可直接关联。
+
+### 9.2 输出格式
+
+生成文件: `output/酒店主数据导入_YYYY-MM-DD.xlsx`
+
+包含 2 个 Sheet：
+
+#### Sheet1: 酒店主数据
+
+| 输出字段 | 来源 | 说明 |
+|---------|------|------|
+| Hotel Code | 门店ID | 如 3100054 |
+| Hotel Name | 门店名称 | 中文名称 |
+| Brand | 品牌 | 如"亚朵S" |
+| City | 所属城市 | |
+| Country | 固定 "China" | |
+| Address | 门店地址 | 中文地址 |
+| Phone (Country/Area/Number) | 电话字段拆分 | 86 / 021 / 62211599 |
+| Postal Code | 邮编 | |
+| Time Zone | 固定 "China Standard Time" | |
+| Check-in Time | 固定 "14:00:00" | |
+| Check-out Time | 固定 "12:00:00" | |
+| Currency | 固定 "CNY" | |
+| Business Model | 固定 "Dual" | |
+| Rate Acquisition Type | 固定 "SellLAR" | |
+| Min Adult Age | 固定 "18" | |
+| Rates Inclusive of Taxes | 固定 "Yes" | |
+| Cancellation Time | 固定 "12:00:00" | |
+| Photos | 固定 "Excel sheet (with media links)" | |
+
+#### Sheet2: 房间主数据
+
+| 输出字段 | 来源 | 说明 |
+|---------|------|------|
+| Hotel Code | 集团酒店编号（门店ID） | |
+| Room Type Code | 集团房型代码 | 如 SK、ET |
+| Room Type Name | 房型英文名字 | 如 Superior Queen Room |
+| Max Occupancy | 可容纳人数 | |
+| Max Adults | 成人人数 | 同可容纳人数 |
+| Max Children | 儿童人数 | 默认 0 |
+| BeddingOption1 | 床型 → Expedia BedType | 见床型映射规则 |
+| Smoking | 固定 "NonSmoking" | |
+| RNS Flag | 固定 "Yes" | |
+| Rate Plan Code | `{集团房型代码}-HC-A` (Agency) / `{集团房型代码}-EC-A` (Merchant) | |
+| Rate Plan Name | `Room Only HC A` (Agency) / `Room Only EC A` (Merchant) | |
+| Rate Plan Type | 固定 "Standalone" | |
+| Rate Plan Business Model | Agency / Merchant | |
+| Value Add 1 | 固定 "Free Wireless Internet" | |
+| Cancellation Window Hours | 固定 "18" | |
+| Outside/Inside Window Penalty | 固定 "Full Cost of Stay" | |
+| Min Advance Booking Days | 0 | |
+| Max Advance Booking Days | 180 | |
+| Min Length of Stay | 1 | |
+| Max Length of Stay | 28 | |
+| Waive Taxes Enabled | 固定 "Yes" | |
+
+> **每条房型生成 2 行**：Agency Rate Plan + Merchant Rate Plan
+
+### 9.3 床型映射规则
+
+| 中文床型字符串 | Expedia BeddingOption1 | 示例 |
+|--------------|----------------------|------|
+| `1.8` / `2` / `2.0` | `1 KingBed` | 大床 |
+| `1.5` / `1.5,1.5` | `1 QueenBed` | 中床 |
+| `1.2,1.2` | `2 TwinBed` | 双床 |
+| `1.2,1.5` / `1.5,1.2` | `1 QueenBed&1 TwinBed` | 混合床 |
+| `1.8,1.2` / `2,1.2` | `1 KingBed&1 TwinBed` | 大床+单人床 |
+| `1.8,1.0` | `1 KingBed` | 大床（床位数1.0） |
+| `1.5(沙发床),1.8` 等含沙发床 | 需特殊处理 | 亲子/套房 |
+
+### 9.4 处理流程
+
+```
+1. 读取 亚朵房型信息 + 门店基础信息
+2. 通过 集团酒店编号 = 门店ID 合并 hotel-level 信息
+3. 床型字符串 → Expedia BedType 转换
+4. 生成 Sheet1（酒店主数据，1行/酒店）
+5. 生成 Sheet2（房间主数据，每房型2行 = Agency + Merchant）
+6. 输出 Excel 到 output/ 目录
+```
+
+---
+
+**文档版本**: v1.3
+**最后更新**: 2026-05-26
 **维护人员**: 产品团队
