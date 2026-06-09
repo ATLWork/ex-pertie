@@ -2,6 +2,7 @@
 Authentication dependencies for FastAPI.
 """
 
+import os
 from typing import List, Optional
 
 from fastapi import Depends, HTTPException, status
@@ -18,6 +19,9 @@ from app.models.user import User, UserStatus
 
 # Bearer token security scheme
 security = HTTPBearer(auto_error=False)
+
+# Anonymous mode: allow unauthenticated access when enabled
+ANONYMOUS_MODE = os.getenv("ANONYMOUS_ENABLED", "false").lower() in ("true", "1", "yes")
 
 
 async def get_current_user(
@@ -38,12 +42,31 @@ async def get_current_user(
         UnauthorizedError: If token is invalid or user not found
     """
     if credentials is None:
+        if ANONYMOUS_MODE:
+            # Return a dummy user for anonymous mode
+            return User(
+                id="anonymous",
+                username="anonymous",
+                email="anonymous@local",
+                full_name="Anonymous User",
+                status=UserStatus.ACTIVE,
+                is_superuser=False,
+            )
         raise UnauthorizedError(message="Not authenticated", details={"reason": "no_token"})
 
     token = credentials.credentials
     user_id = verify_token(token, token_type="access")
 
     if user_id is None:
+        if ANONYMOUS_MODE:
+            return User(
+                id="anonymous",
+                username="anonymous",
+                email="anonymous@local",
+                full_name="Anonymous User",
+                is_active=True,
+                is_superuser=False,
+            )
         raise UnauthorizedError(message="Invalid token", details={"reason": "invalid_token"})
 
     # Query user from database with roles
@@ -55,6 +78,15 @@ async def get_current_user(
     user = result.scalar_one_or_none()
 
     if user is None:
+        if ANONYMOUS_MODE:
+            return User(
+                id="anonymous",
+                username="anonymous",
+                email="anonymous@local",
+                full_name="Anonymous User",
+                is_active=True,
+                is_superuser=False,
+            )
         raise UnauthorizedError(message="User not found", details={"reason": "user_not_found"})
 
     if not user.is_active:

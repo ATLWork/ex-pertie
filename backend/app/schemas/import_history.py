@@ -41,8 +41,7 @@ class ImportHistoryResponse(ImportHistoryBase):
     operator_name: Optional[str] = None
     operator_ip: Optional[str] = None
     notes: Optional[str] = None
-    created_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime] = None
 
     @property
     def success_rate(self) -> float:

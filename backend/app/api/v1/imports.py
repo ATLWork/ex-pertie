@@ -108,10 +108,35 @@ async def import_hotels(
     # Commit the transaction
     await db.commit()
 
+    # Build response dict manually to avoid lazy loading issues
+    history_dict = {
+        "id": import_history.id,
+        "file_name": import_history.file_name,
+        "import_type": import_history.import_type,
+        "status": import_history.status,
+        "file_path": import_history.file_path,
+        "file_size": import_history.file_size,
+        "file_hash": import_history.file_hash,
+        "total_rows": import_history.total_rows,
+        "success_rows": import_history.success_rows,
+        "failed_rows": import_history.failed_rows,
+        "skipped_rows": import_history.skipped_rows,
+        "error_log": import_history.error_log,
+        "warning_log": import_history.warning_log,
+        "started_at": import_history.started_at,
+        "completed_at": import_history.completed_at,
+        "processing_time": import_history.processing_time,
+        "operator_id": import_history.operator_id,
+        "operator_name": import_history.operator_name,
+        "operator_ip": import_history.operator_ip,
+        "notes": import_history.notes,
+        "created_at": import_history.created_at,
+    }
+
     return ApiResponse(
         code=201,
         message=f"Hotel import completed: {import_history.success_rows} succeeded, {import_history.failed_rows} failed",
-        data=ImportHistoryResponse.model_validate(import_history),
+        data=ImportHistoryResponse.model_validate(history_dict),
     )
 
 
