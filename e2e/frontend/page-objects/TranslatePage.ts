@@ -5,14 +5,14 @@ export class TranslatePage {
   readonly sourceTextarea: Locator;
   readonly targetTextarea: Locator;
   readonly translateButton: Locator;
-  readonly batchModeButton: Locator;
+  readonly batchTranslateButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.sourceTextarea = page.locator('textarea[name="source"], textarea[name="text"], textarea').first();
-    this.targetTextarea = page.locator('textarea[name="target"], textarea[readonly]');
-    this.translateButton = page.locator('button:has-text("翻译"), button:has-text("Translate")');
-    this.batchModeButton = page.locator('button:has-text("批量"), button:has-text("Batch")');
+    this.sourceTextarea = page.getByPlaceholder('输入要翻译的文本...');
+    this.targetTextarea = page.getByPlaceholder('翻译结果将显示在这里...');
+    this.translateButton = page.getByRole('button', { name: /^翻译$/ });
+    this.batchTranslateButton = page.getByRole('button', { name: '全部翻译' });
   }
 
   async goto() {

@@ -6,16 +6,13 @@ test.describe('翻译规则测试', () => {
     await page.goto('/rules');
   });
 
-  test('rules-001: 规则列表加载', async ({ page }) => {
+  test('rules-001: 规则表格加载', async ({ page }) => {
     const rulesPage = new RulesPage(page);
-    await rulesPage.expectTableVisible();
+    await expect(rulesPage.rulesTable).toBeVisible();
   });
 
   test('rules-002: 添加规则按钮可见', async ({ page }) => {
     const rulesPage = new RulesPage(page);
-    if (await rulesPage.addButton.isVisible()) {
-      await rulesPage.addButton.click();
-      // 期望显示规则表单
-    }
+    await expect(rulesPage.addButton).toBeVisible();
   });
 });

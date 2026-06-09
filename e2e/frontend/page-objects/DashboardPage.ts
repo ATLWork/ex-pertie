@@ -8,13 +8,14 @@ export class DashboardPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.sidebar = page.locator('.ant-layout-sider, [class*="sider"]');
-    this.header = page.locator('.ant-layout-header, [class*="header"]');
-    this.logoutButton = page.locator('button:has-text("登出"), button:has-text("Logout")');
+    this.sidebar = page.locator('aside');
+    this.header = page.locator('header');
+    this.logoutButton = page.getByRole('menuitem', { name: '退出登录' });
   }
 
   async goto() {
-    await this.page.goto('/');
+    // Default landing page after login is /import
+    await this.page.goto('/import');
   }
 
   async expectToBeVisible() {

@@ -2,15 +2,15 @@ import { Page, Locator, expect } from '@playwright/test';
 
 export class ExportPage {
   readonly page: Page;
-  readonly exportButton: Locator;
+  readonly newExportBtn: Locator;
   readonly formatSelect: Locator;
   readonly historyTable: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.exportButton = page.locator('button:has-text("导出"), button:has-text("Export")');
-    this.formatSelect = page.locator('.ant-select');
-    this.historyTable = page.locator('.ant-table');
+    this.newExportBtn = page.getByRole('button', { name: '新建导出' });
+    this.formatSelect = page.locator('select');
+    this.historyTable = page.locator('table');
   }
 
   async goto() {
@@ -18,7 +18,7 @@ export class ExportPage {
   }
 
   async expectFormVisible() {
-    await expect(this.exportButton.or(this.formatSelect)).toBeVisible();
+    await expect(this.newExportBtn).toBeVisible();
   }
 
   async expectHistoryTableVisible() {

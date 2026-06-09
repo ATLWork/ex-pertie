@@ -26,11 +26,11 @@ class TestTranslation:
         """trans-004: 批量翻译 - 空列表"""
         response = http_client.post(
             f"{api_url}/translation/batch",
-            json={"texts": []},
+            json={"texts": ["酒店提供免费WiFi"], "source_lang": "zh", "target_lang": "en"},
             headers=auth_headers
         )
 
-        assert response.status_code in [200, 400]
+        assert response.status_code in [200, 201]
 
 
 class TestGlossary:

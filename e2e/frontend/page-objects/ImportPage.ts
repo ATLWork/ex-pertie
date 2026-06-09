@@ -2,17 +2,15 @@ import { Page, Locator, expect } from '@playwright/test';
 
 export class ImportPage {
   readonly page: Page;
-  readonly uploadButton: Locator;
+  readonly uploadZone: Locator;
   readonly fileInput: Locator;
   readonly historyTable: Locator;
-  readonly uploadProgress: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.uploadButton = page.locator('button:has-text("上传"), button:has-text("Upload"), button:has-text("导入")');
+    this.uploadZone = page.locator('.border-dashed.cursor-pointer').first();
     this.fileInput = page.locator('input[type="file"]');
-    this.historyTable = page.locator('.ant-table');
-    this.uploadProgress = page.locator('.ant-progress');
+    this.historyTable = page.locator('table');
   }
 
   async goto() {
@@ -20,7 +18,7 @@ export class ImportPage {
   }
 
   async expectUploadAreaVisible() {
-    await expect(this.uploadButton.or(this.fileInput)).toBeVisible();
+    await expect(this.uploadZone).toBeVisible();
   }
 
   async expectHistoryTableVisible() {

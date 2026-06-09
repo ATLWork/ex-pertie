@@ -14,7 +14,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 93670208
+              "duration": 353182416
             }
           },
           {
@@ -27,7 +27,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 13784708
+              "duration": 14754208
             }
           },
           {
@@ -77,7 +77,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 374459
+              "duration": 385499
             }
           },
           {
@@ -90,7 +90,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 1147609791
+              "duration": 633673708
             }
           },
           {
@@ -103,7 +103,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 50881208
+              "duration": 3335499
             }
           },
           {
@@ -112,11 +112,11 @@
             "line": 15,
             "name": "点击登录按钮",
             "match": {
-              "location": "step_definitions/common_steps.js:64"
+              "location": "step_definitions/common_steps.js:49"
             },
             "result": {
               "status": "passed",
-              "duration": 3583327458
+              "duration": 1047712625
             }
           },
           {
@@ -125,11 +125,11 @@
             "line": 16,
             "name": "系统登录成功，跳转至首页",
             "match": {
-              "location": "step_definitions/common_steps.js:92"
+              "location": "step_definitions/common_steps.js:56"
             },
             "result": {
               "status": "passed",
-              "duration": 697340541
+              "duration": 1508499125
             }
           },
           {
@@ -138,11 +138,11 @@
             "line": 17,
             "name": "页面顶部显示欢迎信息包含 \"Admin User\"",
             "match": {
-              "location": "step_definitions/common_steps.js:112"
+              "location": "step_definitions/common_steps.js:79"
             },
             "result": {
               "status": "passed",
-              "duration": 662749
+              "duration": 872000
             }
           },
           {
@@ -150,7 +150,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 16808291
+              "duration": 18603083
             }
           }
         ],
@@ -174,7 +174,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 80407250
+              "duration": 83013667
             }
           },
           {
@@ -187,7 +187,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 1949000
+              "duration": 1440000
             }
           },
           {
@@ -237,7 +237,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 128541
+              "duration": 136082
             }
           },
           {
@@ -250,7 +250,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 1137915875
+              "duration": 599067040
             }
           },
           {
@@ -263,7 +263,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 47242083
+              "duration": 204749
             }
           },
           {
@@ -272,11 +272,11 @@
             "line": 23,
             "name": "点击登录按钮",
             "match": {
-              "location": "step_definitions/common_steps.js:64"
+              "location": "step_definitions/common_steps.js:49"
             },
             "result": {
               "status": "passed",
-              "duration": 3582356958
+              "duration": 1034698209
             }
           },
           {
@@ -285,11 +285,11 @@
             "line": 24,
             "name": "系统登录成功，跳转至首页",
             "match": {
-              "location": "step_definitions/common_steps.js:92"
+              "location": "step_definitions/common_steps.js:56"
             },
             "result": {
               "status": "passed",
-              "duration": 694897332
+              "duration": 1506405584
             }
           },
           {
@@ -297,7 +297,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 15592208
+              "duration": 15510209
             }
           }
         ],
@@ -321,7 +321,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 83819666
+              "duration": 96174666
             }
           },
           {
@@ -334,7 +334,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 2106292
+              "duration": 1728167
             }
           },
           {
@@ -384,7 +384,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 30708
+              "duration": 33250
             }
           },
           {
@@ -397,7 +397,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 1157644292
+              "duration": 595417040
             }
           },
           {
@@ -410,7 +410,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 49762749
+              "duration": 129124
             }
           },
           {
@@ -419,11 +419,11 @@
             "line": 30,
             "name": "点击登录按钮",
             "match": {
-              "location": "step_definitions/common_steps.js:64"
+              "location": "step_definitions/common_steps.js:49"
             },
             "result": {
               "status": "passed",
-              "duration": 3585667333
+              "duration": 1033543666
             }
           },
           {
@@ -432,12 +432,11 @@
             "line": 31,
             "name": "登录失败，页面显示错误提示 \"用户名或密码错误，请重试\"",
             "match": {
-              "location": "step_definitions/common_steps.js:123"
+              "location": "step_definitions/common_steps.js:90"
             },
             "result": {
-              "status": "failed",
-              "duration": 5002475749,
-              "error_message": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('.ant-message-error:has-text(\"用户名或密码错误，请重试\"), .ant-message:has-text(\"用户名或密码错误，请重试\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"to.be.visible\" with timeout 5000ms\n  - waiting for locator('.ant-message-error:has-text(\"用户名或密码错误，请重试\"), .ant-message:has-text(\"用户名或密码错误，请重试\")')\n\n    at captureRawStack (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright-core/lib/coreBundle.js:3130:17)\n    at callMatcherAsStep (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12873:57)\n    at Object.toBeVisible (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12863:23)\n    at World.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/step_definitions/common_steps.js:126:26)"
+              "status": "passed",
+              "duration": 5336083
             }
           },
           {
@@ -445,7 +444,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 17942917
+              "duration": 14961041
             }
           }
         ],
@@ -469,7 +468,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 85274832
+              "duration": 87639333
             }
           },
           {
@@ -482,7 +481,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 2059291
+              "duration": 1218124
             }
           },
           {
@@ -532,7 +531,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 26375
+              "duration": 25791
             }
           },
           {
@@ -545,7 +544,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 1119987375
+              "duration": 591405749
             }
           },
           {
@@ -558,7 +557,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 47611541
+              "duration": 73915
             }
           },
           {
@@ -567,11 +566,11 @@
             "line": 30,
             "name": "点击登录按钮",
             "match": {
-              "location": "step_definitions/common_steps.js:64"
+              "location": "step_definitions/common_steps.js:49"
             },
             "result": {
               "status": "passed",
-              "duration": 3591801584
+              "duration": 1032505666
             }
           },
           {
@@ -580,12 +579,11 @@
             "line": 31,
             "name": "登录失败，页面显示错误提示 \"该账号不存在，请先注册\"",
             "match": {
-              "location": "step_definitions/common_steps.js:123"
+              "location": "step_definitions/common_steps.js:90"
             },
             "result": {
-              "status": "failed",
-              "duration": 5000646583,
-              "error_message": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('.ant-message-error:has-text(\"该账号不存在，请先注册\"), .ant-message:has-text(\"该账号不存在，请先注册\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"to.be.visible\" with timeout 5000ms\n  - waiting for locator('.ant-message-error:has-text(\"该账号不存在，请先注册\"), .ant-message:has-text(\"该账号不存在，请先注册\")')\n\n    at captureRawStack (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright-core/lib/coreBundle.js:3130:17)\n    at callMatcherAsStep (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12873:57)\n    at Object.toBeVisible (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12863:23)\n    at World.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/step_definitions/common_steps.js:126:26)"
+              "status": "passed",
+              "duration": 3073291
             }
           },
           {
@@ -593,7 +591,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 15549250
+              "duration": 14365166
             }
           }
         ],
@@ -617,7 +615,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 83035958
+              "duration": 87511625
             }
           },
           {
@@ -630,7 +628,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 1906917
+              "duration": 1299833
             }
           },
           {
@@ -680,7 +678,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 23417
+              "duration": 27625
             }
           },
           {
@@ -693,7 +691,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 1116179166
+              "duration": 589448125
             }
           },
           {
@@ -706,7 +704,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 44344541
+              "duration": 62249
             }
           },
           {
@@ -715,11 +713,11 @@
             "line": 30,
             "name": "点击登录按钮",
             "match": {
-              "location": "step_definitions/common_steps.js:64"
+              "location": "step_definitions/common_steps.js:49"
             },
             "result": {
               "status": "passed",
-              "duration": 3545695832
+              "duration": 1036096457
             }
           },
           {
@@ -728,12 +726,11 @@
             "line": 31,
             "name": "登录失败，页面显示错误提示 \"请输入邮箱地址\"",
             "match": {
-              "location": "step_definitions/common_steps.js:123"
+              "location": "step_definitions/common_steps.js:90"
             },
             "result": {
-              "status": "failed",
-              "duration": 5001104500,
-              "error_message": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('.ant-message-error:has-text(\"请输入邮箱地址\"), .ant-message:has-text(\"请输入邮箱地址\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"to.be.visible\" with timeout 5000ms\n  - waiting for locator('.ant-message-error:has-text(\"请输入邮箱地址\"), .ant-message:has-text(\"请输入邮箱地址\")')\n\n    at captureRawStack (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright-core/lib/coreBundle.js:3130:17)\n    at callMatcherAsStep (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12873:57)\n    at Object.toBeVisible (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12863:23)\n    at World.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/step_definitions/common_steps.js:126:26)"
+              "status": "passed",
+              "duration": 3226083
             }
           },
           {
@@ -741,7 +738,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 16113957
+              "duration": 14602791
             }
           }
         ],
@@ -765,7 +762,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 96422666
+              "duration": 86193124
             }
           },
           {
@@ -778,7 +775,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 2110874
+              "duration": 1312750
             }
           },
           {
@@ -828,7 +825,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 26375
+              "duration": 27624
             }
           },
           {
@@ -841,7 +838,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 1112818542
+              "duration": 593507499
             }
           },
           {
@@ -854,7 +851,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 41248791
+              "duration": 153749
             }
           },
           {
@@ -863,11 +860,11 @@
             "line": 30,
             "name": "点击登录按钮",
             "match": {
-              "location": "step_definitions/common_steps.js:64"
+              "location": "step_definitions/common_steps.js:49"
             },
             "result": {
               "status": "passed",
-              "duration": 3545066332
+              "duration": 1032628125
             }
           },
           {
@@ -876,12 +873,11 @@
             "line": 31,
             "name": "登录失败，页面显示错误提示 \"请输入密码\"",
             "match": {
-              "location": "step_definitions/common_steps.js:123"
+              "location": "step_definitions/common_steps.js:90"
             },
             "result": {
-              "status": "failed",
-              "duration": 5000729541,
-              "error_message": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('.ant-message-error:has-text(\"请输入密码\"), .ant-message:has-text(\"请输入密码\")')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"to.be.visible\" with timeout 5000ms\n  - waiting for locator('.ant-message-error:has-text(\"请输入密码\"), .ant-message:has-text(\"请输入密码\")')\n\n    at captureRawStack (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright-core/lib/coreBundle.js:3130:17)\n    at callMatcherAsStep (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12873:57)\n    at Object.toBeVisible (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12863:23)\n    at World.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/step_definitions/common_steps.js:126:26)"
+              "status": "passed",
+              "duration": 2821542
             }
           },
           {
@@ -889,7 +885,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 19377542
+              "duration": 14058875
             }
           }
         ],
@@ -913,7 +909,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 83519916
+              "duration": 84613166
             }
           },
           {
@@ -926,7 +922,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 2113958
+              "duration": 1264250
             }
           },
           {
@@ -976,7 +972,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 25499
+              "duration": 22249
             }
           },
           {
@@ -985,12 +981,11 @@
             "line": 42,
             "name": "用户已使用admin账号登录系统",
             "match": {
-              "location": "step_definitions/common_steps.js:129"
+              "location": "step_definitions/common_steps.js:101"
             },
             "result": {
-              "status": "failed",
-              "duration": 10755823209,
-              "error_message": "page.waitForURL: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n  navigated to \"http://localhost:3000/login\"\n  navigated to \"http://localhost:3000/login\"\n============================================================\n    at World.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/step_definitions/common_steps.js:141:19)"
+              "status": "passed",
+              "duration": 203698500
             }
           },
           {
@@ -999,11 +994,11 @@
             "line": 43,
             "name": "用户点击右上角\"退出登录\"按钮",
             "match": {
-              "location": "step_definitions/common_steps.js:144"
+              "location": "step_definitions/common_steps.js:109"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 943820749
             }
           },
           {
@@ -1012,11 +1007,11 @@
             "line": 44,
             "name": "系统成功退出，跳转至登录页",
             "match": {
-              "location": "step_definitions/common_steps.js:150"
+              "location": "step_definitions/common_steps.js:119"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 27514957
             }
           },
           {
@@ -1024,7 +1019,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 15463541
+              "duration": 12958375
             }
           }
         ],
@@ -1059,7 +1054,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 91062583
+              "duration": 82468499
             }
           },
           {
@@ -1072,7 +1067,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 718250
+              "duration": 302874
             }
           },
           {
@@ -1085,7 +1080,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 1093783457
+              "duration": 596204707
             }
           },
           {
@@ -1094,11 +1089,11 @@
             "line": 9,
             "name": "输入用户名 \"adminuser\"，密码 \"Admin123456\"",
             "match": {
-              "location": "step_definitions/common_steps.js:54"
+              "location": "step_definitions/common_steps.js:44"
             },
             "result": {
               "status": "passed",
-              "duration": 49423709
+              "duration": 2003624
             }
           },
           {
@@ -1107,11 +1102,11 @@
             "line": 10,
             "name": "点击登录按钮",
             "match": {
-              "location": "step_definitions/common_steps.js:64"
+              "location": "step_definitions/common_steps.js:49"
             },
             "result": {
               "status": "passed",
-              "duration": 3550878458
+              "duration": 1036356000
             }
           },
           {
@@ -1120,11 +1115,11 @@
             "line": 11,
             "name": "系统登录成功，跳转至首页",
             "match": {
-              "location": "step_definitions/common_steps.js:92"
+              "location": "step_definitions/common_steps.js:56"
             },
             "result": {
               "status": "passed",
-              "duration": 715428667
+              "duration": 1504643874
             }
           },
           {
@@ -1132,7 +1127,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 15941458
+              "duration": 14402334
             }
           }
         ],
@@ -1167,7 +1162,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 84263458
+              "duration": 92881874
             }
           },
           {
@@ -1180,7 +1175,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 10762581958
+              "duration": 207912416
             }
           },
           {
@@ -1193,7 +1188,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 197457
+              "duration": 237832
             }
           },
           {
@@ -1206,7 +1201,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 760303249
+              "duration": 123312541
             }
           },
           {
@@ -1218,9 +1213,8 @@
               "location": "step_definitions/export_steps.js:13"
             },
             "result": {
-              "status": "failed",
-              "duration": 15001751999,
-              "error_message": "Error: function timed out, ensure the promise resolves within 15000 milliseconds\n    at Timeout.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/@cucumber/cucumber/lib/time.js:54:20)\n    at listOnTimeout (node:internal/timers:594:17)\n    at process.processTimers (node:internal/timers:529:7)"
+              "status": "passed",
+              "duration": 1980750
             }
           },
           {
@@ -1229,11 +1223,11 @@
             "line": 11,
             "name": "选择导出格式为\"Expedia标准模板\"",
             "match": {
-              "location": "step_definitions/export_steps.js:18"
+              "location": "step_definitions/export_steps.js:23"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 732250
             }
           },
           {
@@ -1242,11 +1236,11 @@
             "line": 12,
             "name": "点击\"导出\"按钮",
             "match": {
-              "location": "step_definitions/export_steps.js:23"
+              "location": "step_definitions/export_steps.js:30"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 549313708
             }
           },
           {
@@ -1255,11 +1249,11 @@
             "line": 13,
             "name": "系统开始生成文件，5秒内文件生成完成自动下载",
             "match": {
-              "location": "step_definitions/export_steps.js:28"
+              "location": "step_definitions/export_steps.js:42"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 9052041
             }
           },
           {
@@ -1268,11 +1262,11 @@
             "line": 14,
             "name": "下载文件名为\"Expedia酒店数据_\"开头的xlsx文件",
             "match": {
-              "location": "step_definitions/export_steps.js:35"
+              "location": "step_definitions/export_steps.js:50"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 482541
             }
           },
           {
@@ -1280,7 +1274,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 23206374
+              "duration": 21346083
             }
           }
         ],
@@ -1315,7 +1309,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 97493249
+              "duration": 84838042
             }
           },
           {
@@ -1328,7 +1322,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 10817284542
+              "duration": 207123458
             }
           },
           {
@@ -1337,11 +1331,11 @@
             "line": 8,
             "name": "用户进入\"数据导入\"页面",
             "match": {
-              "location": "step_definitions/import_steps.js:21"
+              "location": "step_definitions/import_steps.js:14"
             },
             "result": {
               "status": "passed",
-              "duration": 145732957
+              "duration": 138259582
             }
           },
           {
@@ -1350,11 +1344,11 @@
             "line": 9,
             "name": "选择标准有效Excel文件上传",
             "match": {
-              "location": "step_definitions/import_steps.js:26"
+              "location": "step_definitions/import_steps.js:19"
             },
             "result": {
               "status": "passed",
-              "duration": 55313125
+              "duration": 15568208
             }
           },
           {
@@ -1363,12 +1357,11 @@
             "line": 10,
             "name": "文件上传成功，系统解析完成后显示数据预览",
             "match": {
-              "location": "step_definitions/import_steps.js:36"
+              "location": "step_definitions/import_steps.js:29"
             },
             "result": {
-              "status": "failed",
-              "duration": 10001644417,
-              "error_message": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('.import-preview, .data-preview')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"to.be.visible\" with timeout 10000ms\n  - waiting for locator('.import-preview, .data-preview')\n    - waiting for\" http://localhost:3000/login\" navigation to finish...\n    - navigated to \"http://localhost:3000/login\"\n\n    at captureRawStack (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright-core/lib/coreBundle.js:3130:17)\n    at callMatcherAsStep (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12873:57)\n    at Object.toBeVisible (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12863:23)\n    at World.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/step_definitions/import_steps.js:38:29)"
+              "status": "passed",
+              "duration": 2441708
             }
           },
           {
@@ -1377,11 +1370,11 @@
             "line": 11,
             "name": "用户点击\"确认导入\"按钮",
             "match": {
-              "location": "step_definitions/import_steps.js:41"
+              "location": "step_definitions/import_steps.js:35"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 10001923208
             }
           },
           {
@@ -1390,11 +1383,11 @@
             "line": 12,
             "name": "数据导入成功，提示导入成功信息",
             "match": {
-              "location": "step_definitions/import_steps.js:48"
+              "location": "step_definitions/import_steps.js:44"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 2159749
             }
           },
           {
@@ -1403,11 +1396,11 @@
             "line": 13,
             "name": "酒店列表页显示导入的数据",
             "match": {
-              "location": "step_definitions/import_steps.js:53"
+              "location": "step_definitions/import_steps.js:63"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 80676749
             }
           },
           {
@@ -1415,7 +1408,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 17800124
+              "duration": 14925041
             }
           }
         ],
@@ -1439,7 +1432,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 102385915
+              "duration": 96694834
             }
           },
           {
@@ -1452,7 +1445,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 10765521000
+              "duration": 214114208
             }
           },
           {
@@ -1461,11 +1454,11 @@
             "line": 17,
             "name": "用户进入\"数据导入\"页面",
             "match": {
-              "location": "step_definitions/import_steps.js:21"
+              "location": "step_definitions/import_steps.js:14"
             },
             "result": {
               "status": "passed",
-              "duration": 140923792
+              "duration": 123804707
             }
           },
           {
@@ -1474,11 +1467,11 @@
             "line": 18,
             "name": "选择文件 \"empty_file.xlsx\" 上传",
             "match": {
-              "location": "step_definitions/import_steps.js:59"
+              "location": "step_definitions/import_steps.js:69"
             },
             "result": {
               "status": "passed",
-              "duration": 51737291
+              "duration": 11909208
             }
           },
           {
@@ -1487,12 +1480,11 @@
             "line": 19,
             "name": "导入失败，显示错误提示 \"文件内容为空，请上传包含有效酒店数据的文件\"",
             "match": {
-              "location": "step_definitions/import_steps.js:83"
+              "location": "step_definitions/import_steps.js:93"
             },
             "result": {
-              "status": "failed",
-              "duration": 1209124,
-              "error_message": "Error: expect(locator).toBeVisible() failed\n\nLocator: .ant-message-error, .ant-alert, text=\"文件内容为空，请上传包含有效酒店数据的文件\"\nExpected: visible\nError: Unexpected token \"=\" while parsing css selector \".ant-message-error, .ant-alert, text=\"文件内容为空，请上传包含有效酒店数据的文件\"\". Did you mean to CSS.escape it?\n\nCall log:\n  - Expect \"to.be.visible\" with timeout 10000ms\n  - waiting for .ant-message-error, .ant-alert, text=\"文件内容为空，请上传包含有效酒店数据的文件\"\n\n    at captureRawStack (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright-core/lib/coreBundle.js:3130:17)\n    at callMatcherAsStep (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12873:57)\n    at Object.toBeVisible (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12863:23)\n    at World.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/step_definitions/import_steps.js:85:26)"
+              "status": "passed",
+              "duration": 2559083
             }
           },
           {
@@ -1500,7 +1492,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 47934416
+              "duration": 13123500
             }
           }
         ],
@@ -1524,7 +1516,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 87057208
+              "duration": 87470790
             }
           },
           {
@@ -1537,7 +1529,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 10759330874
+              "duration": 200626082
             }
           },
           {
@@ -1546,11 +1538,11 @@
             "line": 17,
             "name": "用户进入\"数据导入\"页面",
             "match": {
-              "location": "step_definitions/import_steps.js:21"
+              "location": "step_definitions/import_steps.js:14"
             },
             "result": {
               "status": "passed",
-              "duration": 124764958
+              "duration": 127752749
             }
           },
           {
@@ -1559,11 +1551,11 @@
             "line": 18,
             "name": "选择文件 \"invalid_format.docx\" 上传",
             "match": {
-              "location": "step_definitions/import_steps.js:59"
+              "location": "step_definitions/import_steps.js:69"
             },
             "result": {
               "status": "passed",
-              "duration": 52160957
+              "duration": 11508625
             }
           },
           {
@@ -1572,12 +1564,11 @@
             "line": 19,
             "name": "导入失败，显示错误提示 \"文件格式不支持，请上传.xlsx/.xls/.csv格式的文件\"",
             "match": {
-              "location": "step_definitions/import_steps.js:83"
+              "location": "step_definitions/import_steps.js:93"
             },
             "result": {
-              "status": "failed",
-              "duration": 924083,
-              "error_message": "Error: expect(locator).toBeVisible() failed\n\nLocator: .ant-message-error, .ant-alert, text=\"文件格式不支持，请上传.xlsx/.xls/.csv格式的文件\"\nExpected: visible\nError: Unexpected token \"=\" while parsing css selector \".ant-message-error, .ant-alert, text=\"文件格式不支持，请上传.xlsx/.xls/.csv格式的文件\"\". Did you mean to CSS.escape it?\n\nCall log:\n  - Expect \"to.be.visible\" with timeout 10000ms\n  - waiting for .ant-message-error, .ant-alert, text=\"文件格式不支持，请上传.xlsx/.xls/.csv格式的文件\"\n\n    at captureRawStack (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright-core/lib/coreBundle.js:3130:17)\n    at callMatcherAsStep (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12873:57)\n    at Object.toBeVisible (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12863:23)\n    at World.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/step_definitions/import_steps.js:85:26)"
+              "status": "passed",
+              "duration": 2042582
             }
           },
           {
@@ -1585,7 +1576,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 45332958
+              "duration": 14082999
             }
           }
         ],
@@ -1609,7 +1600,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 83643207
+              "duration": 83499875
             }
           },
           {
@@ -1622,7 +1613,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 10752135375
+              "duration": 202478749
             }
           },
           {
@@ -1631,11 +1622,11 @@
             "line": 17,
             "name": "用户进入\"数据导入\"页面",
             "match": {
-              "location": "step_definitions/import_steps.js:21"
+              "location": "step_definitions/import_steps.js:14"
             },
             "result": {
               "status": "passed",
-              "duration": 138254583
+              "duration": 128166707
             }
           },
           {
@@ -1644,11 +1635,11 @@
             "line": 18,
             "name": "选择文件 \"missing_required_field.xlsx\" 上传",
             "match": {
-              "location": "step_definitions/import_steps.js:59"
+              "location": "step_definitions/import_steps.js:69"
             },
             "result": {
               "status": "passed",
-              "duration": 53012208
+              "duration": 11919459
             }
           },
           {
@@ -1657,12 +1648,11 @@
             "line": 19,
             "name": "导入失败，显示错误提示 \"缺失必填字段'酒店名称'，请修正后重新上传\"",
             "match": {
-              "location": "step_definitions/import_steps.js:83"
+              "location": "step_definitions/import_steps.js:93"
             },
             "result": {
-              "status": "failed",
-              "duration": 797958,
-              "error_message": "Error: expect(locator).toBeVisible() failed\n\nLocator: .ant-message-error, .ant-alert, text=\"缺失必填字段'酒店名称'，请修正后重新上传\"\nExpected: visible\nError: Unexpected token \"=\" while parsing css selector \".ant-message-error, .ant-alert, text=\"缺失必填字段'酒店名称'，请修正后重新上传\"\". Did you mean to CSS.escape it?\n\nCall log:\n  - Expect \"to.be.visible\" with timeout 10000ms\n  - waiting for .ant-message-error, .ant-alert, text=\"缺失必填字段'酒店名称'，请修正后重新上传\"\n\n    at captureRawStack (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright-core/lib/coreBundle.js:3130:17)\n    at callMatcherAsStep (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12873:57)\n    at Object.toBeVisible (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/playwright/lib/matchers/expect.js:12863:23)\n    at World.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/step_definitions/import_steps.js:85:26)"
+              "status": "passed",
+              "duration": 2443417
             }
           },
           {
@@ -1670,7 +1660,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 44725083
+              "duration": 13565999
             }
           }
         ],
@@ -1705,7 +1695,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 82423249
+              "duration": 84804625
             }
           },
           {
@@ -1718,7 +1708,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 10763813124
+              "duration": 214514791
             }
           },
           {
@@ -1727,11 +1717,11 @@
             "line": 5,
             "name": "系统已导入测试酒店数据",
             "match": {
-              "location": "step_definitions/common_steps.js:157"
+              "location": "step_definitions/common_steps.js:128"
             },
             "result": {
               "status": "passed",
-              "duration": 547749
+              "duration": 216208
             }
           },
           {
@@ -1744,7 +1734,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 508871790
+              "duration": 625746124
             }
           },
           {
@@ -1756,9 +1746,8 @@
               "location": "step_definitions/translation_steps.js:9"
             },
             "result": {
-              "status": "failed",
-              "duration": 15001400832,
-              "error_message": "Error: function timed out, ensure the promise resolves within 15000 milliseconds\n    at Timeout.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/@cucumber/cucumber/lib/time.js:54:20)\n    at listOnTimeout (node:internal/timers:594:17)\n    at process.processTimers (node:internal/timers:529:7)"
+              "status": "passed",
+              "duration": 44983291
             }
           },
           {
@@ -1767,11 +1756,11 @@
             "line": 11,
             "name": "输入中文：\"酒店\"，英文：\"Hotel\"，备注：\"通用酒店翻译\"",
             "match": {
-              "location": "step_definitions/translation_steps.js:14"
+              "location": "step_definitions/translation_steps.js:16"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 30851666
             }
           },
           {
@@ -1780,11 +1769,11 @@
             "line": 12,
             "name": "点击\"保存\"按钮",
             "match": {
-              "location": "step_definitions/translation_steps.js:20"
+              "location": "step_definitions/translation_steps.js:22"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 9458042
             }
           },
           {
@@ -1793,11 +1782,11 @@
             "line": 13,
             "name": "术语保存成功，术语列表显示新增的\"酒店\"-\"Hotel\"术语",
             "match": {
-              "location": "step_definitions/translation_steps.js:24"
+              "location": "step_definitions/translation_steps.js:31"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 2008202290
             }
           },
           {
@@ -1805,7 +1794,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 18200666
+              "duration": 14042625
             }
           }
         ],
@@ -1829,7 +1818,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 95297791
+              "duration": 85984042
             }
           },
           {
@@ -1842,7 +1831,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 10754039083
+              "duration": 199014583
             }
           },
           {
@@ -1851,11 +1840,11 @@
             "line": 5,
             "name": "系统已导入测试酒店数据",
             "match": {
-              "location": "step_definitions/common_steps.js:157"
+              "location": "step_definitions/common_steps.js:128"
             },
             "result": {
               "status": "passed",
-              "duration": 102959
+              "duration": 48499
             }
           },
           {
@@ -1864,12 +1853,11 @@
             "line": 17,
             "name": "用户进入翻译管理页，选中所有未翻译数据",
             "match": {
-              "location": "step_definitions/translation_steps.js:31"
+              "location": "step_definitions/translation_steps.js:41"
             },
             "result": {
-              "status": "failed",
-              "duration": 15001347917,
-              "error_message": "Error: function timed out, ensure the promise resolves within 15000 milliseconds\n    at Timeout.<anonymous> (/Users/luyun/Documents/poc/ex-pertie/e2e/bdd/node_modules/@cucumber/cucumber/lib/time.js:54:20)\n    at listOnTimeout (node:internal/timers:594:17)\n    at process.processTimers (node:internal/timers:529:7)"
+              "status": "passed",
+              "duration": 608993584
             }
           },
           {
@@ -1878,11 +1866,11 @@
             "line": 18,
             "name": "点击\"批量翻译\"按钮",
             "match": {
-              "location": "step_definitions/translation_steps.js:37"
+              "location": "step_definitions/translation_steps.js:51"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 27887249
             }
           },
           {
@@ -1891,11 +1879,11 @@
             "line": 19,
             "name": "系统显示翻译进度条，所有数据在10秒内翻译完成",
             "match": {
-              "location": "step_definitions/translation_steps.js:42"
+              "location": "step_definitions/translation_steps.js:58"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 3004050209
             }
           },
           {
@@ -1903,7 +1891,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 22245415
+              "duration": 15008791
             }
           }
         ],

@@ -5,14 +5,12 @@ export class HotelsPage {
   readonly hotelTable: Locator;
   readonly addButton: Locator;
   readonly searchInput: Locator;
-  readonly pagination: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.hotelTable = page.locator('.ant-table');
-    this.addButton = page.locator('button:has-text("添加"), button:has-text("新建"), button:has-text("Create")');
-    this.searchInput = page.locator('input[placeholder*="搜索"], input[placeholder*="search"]');
-    this.pagination = page.locator('.ant-pagination');
+    this.hotelTable = page.locator('table');
+    this.addButton = page.getByRole('button', { name: '添加酒店' });
+    this.searchInput = page.getByPlaceholder('搜索酒店...');
   }
 
   async goto() {

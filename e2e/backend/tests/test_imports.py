@@ -23,7 +23,7 @@ class TestImportList:
         """import-007: 导入历史列表 - 按类型筛选"""
         response = http_client.get(
             f"{api_url}/imports",
-            params={"import_type": "hotels"},
+            params={"import_type": "hotel"},
             headers=auth_headers
         )
 

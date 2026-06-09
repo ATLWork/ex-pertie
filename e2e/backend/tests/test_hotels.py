@@ -53,7 +53,7 @@ class TestHotelList:
         """hotel-005: 酒店列表查询 - 按状态筛选"""
         response = http_client.get(
             f"{api_url}/hotels",
-            params={"status": "active"},
+            params={"status": "draft"},
             headers=auth_headers
         )
 
