@@ -1,3 +1,32 @@
 # Taskwarrior
 .task/*.sqlite3-wal
 .task/*.sqlite3-shm
+
+# Tool config / runtime
+.omo/
+.sisyphus/
+.codegraph/
+.claude/settings.local.json
+
+# Database
+*.db
+
+# Logs & output
+logs/
+output/
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+
+# Node
+node_modules/
+
+# E2E test artifacts
+e2e/backend/report.html
+e2e/frontend/playwright-report/
+e2e/frontend/test-results/
+
+# OS
+.DS_Store
