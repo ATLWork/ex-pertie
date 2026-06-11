@@ -44,6 +44,7 @@ from app.models.terminology import (
     TerminologyCategory,
 )
 from app.models.booking_reference import BookingReference
+from app.models.translation_cache import TranslationCache
 
 __all__ = [
     "BaseModel",
@@ -85,4 +86,5 @@ __all__ = [
     "Terminology",
     "TerminologyCategory",
     "BookingReference",
+    "TranslationCache",
 ]
