@@ -1,6 +1,10 @@
 """
 Translation Cache Service.
 
+Chain of Responsibility: Redis → SQLite → None.
+Automatically falls back to SQLite when Redis is unavailable.
+Falls back to no-cache when both are unavailable.
+
 Implements T033: Translation Result Cache Service
 """
 
@@ -12,12 +16,82 @@ from loguru import logger
 
 from app.core.config import settings
 from app.core.redis import RedisService
+from app.core.database import get_db_context
 from app.schemas.translation import TranslationSource
+from app.services.translation.sqlite_cache_backend import SQLiteCacheBackend
+
+
+class _RedisBackend:
+    async def get(self, key: str) -> Optional[str]:
+        return await RedisService.get(key)
+
+    async def set(self, key: str, value: str, ttl: int) -> bool:
+        await RedisService.set(key, value, ex=ttl)
+        return True
+
+    async def delete(self, key: str) -> bool:
+        await RedisService.delete(key)
+        return True
+
+    async def clear_all(self) -> int:
+        client = RedisService.get_client()
+        keys = []
+        async for key in client.scan_iter(match="translation:*"):
+            keys.append(key)
+        if keys:
+            await RedisService.delete(*keys)
+            return len(keys)
+        return 0
+
+    async def get_stats(self) -> Dict[str, Any]:
+        client = RedisService.get_client()
+        count = sum(1 async for _ in client.scan_iter(match="translation:*"))
+        return {"total_cached": count, "backend": "redis"}
+
+
+class _SqliteBackend:
+    def __init__(self):
+        self._backend = SQLiteCacheBackend()
+    
+    async def get(self, key: str) -> Optional[str]:
+        async with get_db_context() as db:
+            return await self._backend.get(db, key)
+
+    async def set(self, key: str, value: str, ttl: int) -> bool:
+        async with get_db_context() as db:
+            # value 是 JSON 字符串，解析后调用 structured backend.set
+            data = json.loads(value)
+            return await self._backend.set(
+                db=db,
+                cache_key=key,
+                ttl=ttl,
+                text=data.get("original_text", ""),
+                source_lang=data.get("source_lang", ""),
+                target_lang=data.get("target_lang", ""),
+                translated_text=data.get("translated_text", ""),
+                source=data.get("source", "N/A"),
+                confidence=data.get("confidence"),
+                metadata=data.get("metadata"),
+            )
+
+    async def delete(self, key: str) -> bool:
+        async with get_db_context() as db:
+            return await self._backend.delete(db, key)
+
+    async def clear_all(self) -> int:
+        async with get_db_context() as db:
+            success = await self._backend.clear_all(db)
+            return -1 if success else 0  # -1 signals success but unknown count
+
+    async def get_stats(self) -> Dict[str, Any]:
+        async with get_db_context() as db:
+            s = await self._backend.stats(db)
+            return {"total_cached": s.get("total_cached", 0), "backend": "sqlite"}
 
 
 class TranslationCacheService:
     """
-    Redis-based translation cache service.
+    Chain-based translation cache service (Redis → SQLite).
 
     Cache Structure:
         - Key: translation:{source_lang}:{target_lang}:{hash}
@@ -36,6 +110,20 @@ class TranslationCacheService:
             ttl: Cache TTL in seconds (default from settings)
         """
         self.ttl = ttl or settings.TRANSLATION_CACHE_TTL or self.DEFAULT_TTL
+        self._redis = _RedisBackend()
+        self._sqlite = _SqliteBackend()
+
+    async def _try_backends(self, fn_name, *args, default=None):
+        """尝试Redis→SQLite，返回第一个成功的结果"""
+        for backend, name in [(self._redis, "redis"), (self._sqlite, "sqlite")]:
+            try:
+                fn = getattr(backend, fn_name)
+                result = await fn(*args)
+                if result is not None:
+                    return result
+            except Exception as e:
+                logger.warning(f"{name} {fn_name} failed: {e}, trying next backend")
+        return default
 
     def _generate_cache_key(
         self,
@@ -76,6 +164,8 @@ class TranslationCacheService:
         translated_text: str,
         source: TranslationSource,
         original_text: str,
+        source_lang: str,
+        target_lang: str,
         confidence: Optional[float] = None,
         metadata: Optional[Dict[str, Any]] = None,
     ) -> str:
@@ -86,6 +176,8 @@ class TranslationCacheService:
             translated_text: Translated text
             source: Translation source
             original_text: Original text
+            source_lang: Source language
+            target_lang: Target language
             confidence: Confidence score
             metadata: Additional metadata
 
@@ -96,6 +188,8 @@ class TranslationCacheService:
             "translated_text": translated_text,
             "source": source.value,
             "original_text": original_text,
+            "source_lang": source_lang,
+            "target_lang": target_lang,
             "confidence": confidence,
             "metadata": metadata or {},
         }
@@ -137,7 +231,7 @@ class TranslationCacheService:
         """
         try:
             key = self._generate_cache_key(text, source_lang, target_lang, use_ai_enhance)
-            cached = await RedisService.get(key)
+            cached = await self._try_backends("get", key, default=None)
 
             if cached:
                 result = self._deserialize_cache_value(cached)
@@ -192,11 +286,13 @@ class TranslationCacheService:
                 translated_text=translated_text,
                 source=source,
                 original_text=text,
+                source_lang=source_lang,
+                target_lang=target_lang,
                 confidence=confidence,
                 metadata=metadata,
             )
 
-            await RedisService.set(key, value, ex=self.ttl)
+            success = await self._try_backends("set", key, value, self.ttl, default=False)
 
             logger.debug(
                 f"Cached translation",
@@ -207,7 +303,7 @@ class TranslationCacheService:
                     "ttl": self.ttl,
                 },
             )
-            return True
+            return success
 
         except Exception as e:
             logger.warning(f"Cache set failed: {e}")
@@ -234,8 +330,7 @@ class TranslationCacheService:
         """
         try:
             key = self._generate_cache_key(text, source_lang, target_lang, use_ai_enhance)
-            await RedisService.delete(key)
-            return True
+            return await self._try_backends("delete", key, default=False)
         except Exception as e:
             logger.warning(f"Cache delete failed: {e}")
             return False
@@ -307,17 +402,7 @@ class TranslationCacheService:
             Number of keys deleted
         """
         try:
-            client = RedisService.get_client()
-            keys = []
-            async for key in client.scan_iter(match=f"{self.CACHE_KEY_PREFIX}:*"):
-                keys.append(key)
-
-            if keys:
-                await RedisService.delete(*keys)
-                logger.info(f"Cleared {len(keys)} translation cache keys")
-                return len(keys)
-            return 0
-
+            return await self._try_backends("clear_all", default=0)
         except Exception as e:
             logger.error(f"Failed to clear translation cache: {e}")
             return 0
@@ -330,23 +415,41 @@ class TranslationCacheService:
             Statistics dictionary
         """
         try:
-            client = RedisService.get_client()
-            count = 0
-            async for _ in client.scan_iter(match=f"{self.CACHE_KEY_PREFIX}:*"):
-                count += 1
-
-            return {
-                "total_cached": count,
+            stats = await self._try_backends("get_stats", default={"total_cached": 0, "error": "all backends unavailable"})
+            stats.update({
                 "ttl_seconds": self.ttl,
                 "key_prefix": self.CACHE_KEY_PREFIX,
-            }
-
+            })
+            return stats
         except Exception as e:
             logger.error(f"Failed to get cache stats: {e}")
             return {
                 "total_cached": 0,
                 "error": str(e),
             }
+
+    async def active_backend(self) -> str:
+        """
+        Get the name of the currently active backend.
+
+        Returns:
+            "redis", "sqlite", or "none"
+        """
+        try:
+            client = RedisService.get_client()
+            await client.ping()
+            return "redis"
+        except Exception:
+            pass
+
+        try:
+            async with get_db_context() as db:
+                if await self._sqlite._backend.is_available(db):
+                    return "sqlite"
+        except Exception:
+            pass
+
+        return "none"
 
 
 # Singleton instance
